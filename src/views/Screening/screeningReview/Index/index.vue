@@ -35,13 +35,15 @@
         </el-form-item>
         <!-- button -->
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">查询</el-button>
+          <el-button
+            type="primary"
+            @click="handleSearch"
+          >查询</el-button>
           <el-button @click="handleExport">导出</el-button>
           <el-button
             :type="examineBtnStatus ? 'primary' : ''"
             @click="handleExamine"
-            >审批</el-button
-          >
+          >审批</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -55,13 +57,41 @@
         tooltip-effect="dark"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" />
-        <el-table-column fixed prop="key" label="序号" width="150" />
-        <el-table-column prop="name" label="姓名" width="120" />
-        <el-table-column prop="IDcard" label="身份证" width="300" />
-        <el-table-column prop="sex" label="性别" width="120" />
-        <el-table-column prop="status" label="状态" width="120" />
-        <el-table-column prop="CTresult" label="CT结果" width="" />
+        <el-table-column
+          type="selection"
+          width="55"
+        />
+        <el-table-column
+          fixed
+          prop="key"
+          label="序号"
+          width="150"
+        />
+        <el-table-column
+          prop="name"
+          label="姓名"
+          width="120"
+        />
+        <el-table-column
+          prop="IDcard"
+          label="身份证"
+          width="300"
+        />
+        <el-table-column
+          prop="sex"
+          label="性别"
+          width="120"
+        />
+        <el-table-column
+          prop="status"
+          label="状态"
+          width="120"
+        />
+        <el-table-column
+          prop="CTresult"
+          label="CT结果"
+          width=""
+        />
       </el-table>
     </div>
     <!-- 分页底部展示 -->
@@ -78,7 +108,10 @@
       </el-pagination>
     </div>
     <!-- 审批Modal -->
-    <el-dialog title="审批" :visible.sync="examineVisible">
+    <el-dialog
+      title="审批"
+      :visible.sync="examineVisible"
+    >
       <el-form
         :model="examineForm"
         :rules="examineRuleForm"
@@ -87,11 +120,14 @@
       >
         <el-row>
           <el-col :span="24">
-            <el-form-item label="审核：" prop="examineRusult">
+            <el-form-item
+              label="审核："
+              prop="examineRusult"
+            >
               <el-select
                 v-model="examineForm.examineRusult"
                 placeholder="请选择审核选项"
-                 style="width:572px"
+                style="width:572px"
               >
                 <el-option
                   v-for="item in examineOption"
@@ -106,12 +142,30 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="建议：" prop="desc">
-              <el-input placeholder="请给出合理化建议" style="width:572px" type="textarea" v-model="examineForm.desc"></el-input>
+            <el-form-item
+              label="建议："
+              prop="desc"
+            >
+              <el-input
+                placeholder="请给出合理化建议"
+                style="width:572px"
+                type="textarea"
+                v-model="examineForm.desc"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="examineVisible=false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="examineOk('examineForm')"
+        >确 定</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -186,13 +240,13 @@ export default {
       examineVisible: false, //审批Modal显示隐藏
       examineForm: {
         examineRusult: "", //审核选项
-        desc:"",//建议意见
+        desc: "",//建议意见
       }, //审核表单
       examineRuleForm: {
         examineRusult: [
           { required: true, message: "请选择审核原因", trigger: "blur" },
         ],
-         desc: [
+        desc: [
           { required: true, message: "请给出合理化建议", trigger: "blur" },
         ],
       }, //审核表单验证规则
@@ -247,6 +301,15 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
+    examineOk(formName) {
+      this.$refs[formName].validate((valid) => {
+        this.$message({
+          message: '审批完成!',
+          type: 'success'
+        })
+        this.examineVisible = false
+      });
+    }
   },
 };
 </script>
