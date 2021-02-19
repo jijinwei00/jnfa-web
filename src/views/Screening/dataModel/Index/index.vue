@@ -149,7 +149,7 @@
 
 <script>
 export default {
-  name: 'dataModelIndex',
+  name: 'dataModelIndex',//数据模型指标设置
   data() {
     return {
       total: 0, // 查询总数

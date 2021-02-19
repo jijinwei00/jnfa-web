@@ -260,7 +260,7 @@
 
 <script>
 export default {
-  name: 'dataQueryIndex',
+  name: 'dataQueryIndex',//数据查询
   data() {
     return {
       total: 0, // 查询总数

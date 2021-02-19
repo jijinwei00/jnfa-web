@@ -130,7 +130,7 @@
 
 <script>
 export default {
-  name: 'taskManagementIndex',
+  name: 'taskManagementIndex',//任务管理
   data() {
     return {
       total: 0, // 查询总数
