@@ -1,22 +1,13 @@
 <template>
   <div class="main">
     首页
+    <div style="position: relative;left: 50px;top: 100px;">
+      <p style="font-size: 50px;color: #5B9FF8">欢迎登陆肺癌高危人群筛查系统</p>
+    </div>
   </div>
 </template>
 
 <script>
-  import {
-    GetSearchthisyearprojectsum, // 查询本年度的项目总数
-    GetDcinfoadministrationpiechart, // 学科建设餅图
-    GetSradministrationpiechart, // 科研成果餅图
-    PostHomepageadministrationbarchart, // 首頁的柱狀圖
-    GetTransverseProjectSum, // 横向统计
-    GetPortraitProjectSum, // 纵向统计
-    GetSearchpushcontent, // 用户查看待办事项
-    PostUpdpushcontent, // 用户查看待办事项设置为已读
-  } from "@/api/home.js"
-
-
   export default {
     name: 'Main',
     data: function() {

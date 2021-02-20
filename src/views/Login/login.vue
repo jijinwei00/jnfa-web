@@ -37,11 +37,6 @@
             prefix-icon="el-icon-key"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="check">
-          <!-- 绑定是否勾选协议 -->
-          <el-checkbox v-model="loginForm.check">我已阅读并同意用户协议和隐私条款</el-checkbox>
-        </el-form-item>
-
       </el-form>
       <el-button
         @click="handleLogin"
@@ -53,9 +48,8 @@
 </template>
 
 <script>
-import { postUserLogin } from '../../api/Login/loginAPI'
+import { postUserLogin ,getInfo} from '../../api/Login/loginAPI'
 export default {
-  name: 'login',
   data() {
     let validator = function (rule, value, callBack) {
       if (value) {
@@ -88,10 +82,15 @@ export default {
   methods: {
     // 登录接口
     async axiosLogin(params) {
+      let res = await postUserLogin(params)
+      if (200 == res.code) {
+        window.localStorage.setItem('user-token', res.data.token)
+        let infoRes = await getInfo(res.data.token)
+        if (200 == infoRes.code) {
+          window.localStorage.setItem('user-info', JSON.stringify(infoRes.data))
+        }
+      }
       this.$router.push('/home/index') // 登录成功 跳转到home页
-      //   let res = await postUserLogin(params)
-      //   window.localStorage.setItem('user-token', res)
-      //   this.$router.push('/home/index') // 登录成功 跳转到home页
     },
 
     handleLogin() {
@@ -122,7 +121,7 @@ export default {
   align-items: center;
   .login-card {
     width: 440px;
-    height: 350px;
+    height: 300px;
   }
   .header-box {
     height: 50px;
