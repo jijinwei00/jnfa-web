@@ -14,7 +14,8 @@
               src="../../assets/img/admin.png"
               alt=""
             >
-            <span>{{ userInfo.realName }}</span>
+            <!-- <span>{{ userInfo.realName }}</span> -->
+            <span>张三</span>
           </div>
 
           <el-link
@@ -62,7 +63,7 @@ export default {
         height: 'calc(100vh - 56px - 34px - 12px)',
       },
       fromPath: {},
-      userInfo:{}
+      userInfo: {}
     }
   },
   watch: {
