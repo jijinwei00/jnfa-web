@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { postUserLogin ,getInfo} from '../../api/Login/loginAPI'
+import { postUserLogin ,getInfo} from '../../api/loginAPI'
 export default {
   data() {
     let validator = function (rule, value, callBack) {

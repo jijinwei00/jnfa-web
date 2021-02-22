@@ -1,19 +1,14 @@
-import request from '../axios'
-// 系统管理
-
-/**
- *  --------------------------------------- 系统管理 Start ---------------------------------------
- */
+import request from './axios'
 
 /**
  * 用户登录
- * 
- * @param {String} username 
- * @param {String} password  
- * 
+ *
+ * @param {String} username
+ * @param {String} password
+ *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
  {
     "code": 200,
     "msg": "调用成功",
@@ -32,12 +27,12 @@ export function postUserLogin(params) {
 
 /**
  * 获取用户信息
- * 
- * @param {String} token   
- * 
+ *
+ * @param {String} token
+ *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
  {
     "code": 200,
     "msg": "调用成功",
@@ -62,13 +57,13 @@ export function getUserInfo(params) {
 
 /**
  * 分页查看用户列表
- * 
- * @param {String} page  
- * @param {String} size   
- * 
+ *
+ * @param {String} page
+ * @param {String} size
+ *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
      {
     "code": 200,
     "msg": "调用成功",
@@ -99,15 +94,15 @@ export function getUserPageList(params) {
 
 /**
  * 新增用户
- * 
- * @param {String} username  
- * @param {String} password 
+ *
+ * @param {String} username
+ * @param {String} password
  * @param {String} realName
- * @param {String} telephone  
+ * @param {String} telephone
  *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
   {
   "code": 200,
   "msg": "调用成功",
@@ -124,12 +119,12 @@ export function getUserAdd(params) {
 
 /**
  * 删除用户
- * 
- * @param {String} id  
+ *
+ * @param {String} id
  *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
   {
   "code": 200,
   "msg": "调用成功",
@@ -146,42 +141,13 @@ export function getUserDelete(params) {
 
 /**
  * 分页查询操作日志
- * 
- * @param {String} page  
- * @param {String} userName  
- * @param {String} startTime  
- * @param {String} endTime  
- * @param {String} handleName  
- *
- * @method
- * 
- * @return {Object} 
-  {
-  "code": 200,
-  "msg": "调用成功",
-  "data": {
-    "total": 10,
-    "list": [
-      {
-        "id": 1,
-        "handleTime": "2020-12-22 13:49:45",
-        "userName": "admin",
-        "realName": "管理员",
-        "moduleName": "模块名称",
-        "handleName": "分页查询机构"
-      }
-    ]
-  }
-}
+ * @param params
+ * @returns {AxiosPromise}
  */
-export function getHandleLogPageList(params) {
+export function handleLogPageList(params) {
     return request({
         url: '/handleLog/pageList',
         method: 'POST',
-        params
+        data: params
     })
 }
-
-/**
- *  --------------------------------------- 系统管理 End ---------------------------------------
- */

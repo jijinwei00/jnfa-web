@@ -205,7 +205,7 @@ export default new Router({
         component: () => import('@/views/systemManagement/userManagement/Index/index'),
         name: 'userManagement',
         meta: {
-          title: '肺癌高危人群发病监测',
+          title: '用户管理',
           pageLevel: 1
         },
       }, {

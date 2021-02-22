@@ -1,4 +1,4 @@
-import request from '../axios'
+import request from './axios'
 // 肺癌筛查中心
 
 /**
@@ -7,19 +7,19 @@ import request from '../axios'
 
 /**
  * 增加指标
- * 
+ *
  * @param {String} subject  主题
- * @param {String} minAge  
- * @param {String} maxAge 
- * @param {String} exposeHis//危险因素 
+ * @param {String} minAge
+ * @param {String} maxAge
+ * @param {String} exposeHis//危险因素
  * @param {String} manageOrg //属于地区
  * @param {String} pastMaliGnant//是否有恶性肿瘤病史
  * @param {String} smoke//是否抽烟
  * @param {String} passiveSmoking //是否戒过烟
- * 
+ *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
  {
   "code": 0,
   "data": {},
@@ -36,10 +36,10 @@ export function postIndicatorAdd(params) {
 
 /**
  * 查找所有指标
- * 
+ *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
 {
   "code": 200,
   "msg": "调用成功",
@@ -68,11 +68,11 @@ export function postIndicatorListAll(params) {
 
 /**
  * 删除指标
- * @param {String} id 
- * 
- * @method 
- * 
- * @return {Object} 
+ * @param {String} id
+ *
+ * @method
+ *
+ * @return {Object}
 {
   "code": 200,
   "msg": "调用成功",
@@ -92,10 +92,10 @@ export function postIndicatordDelete(params) {
  * @param {String} taskName //测试任务
  * @param {String} startTime //开始时间
  * @param {String} indicatorId //id
- * 
+ *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
  {
   "code": 200,
   "msg": "调用成功",
@@ -113,10 +113,10 @@ export function postTaskAdd(params) {
 /**
  * 删除筛查任务
  * @param {String} id //id
- * 
+ *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
 {
   "code": 200,
   "msg": "调用成功",
@@ -133,10 +133,10 @@ export function postTaskDelete(params) {
 
 /**
  * 查询所有筛查任务
- * 
+ *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
 {
   "code": 200,
   "msg": "调用成功",
@@ -163,10 +163,10 @@ export function postTaskListAll(params) {
 /**
  * 启动筛查任务
  * @param {String} id //id
- * 
+ *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
 {
   "code": 0,
   "msg": "有正在执行的筛查任务，不能开始新的任务",
@@ -183,18 +183,18 @@ export function postTaskStart(params) {
 
 /**
  * 居民查询--筛查结果数据查询
- * @param {String} page 
- * @param {String} size 
- * @param {String} minAge 
- * @param {String} maxAge 
- * @param {String} exposeHis 
- * @param {String} manageOrg 
- * @param {String} pastMaliGnant 
- * @param {String} smoke 
- * @param {String} passiveSmoking 
+ * @param {String} page
+ * @param {String} size
+ * @param {String} minAge
+ * @param {String} maxAge
+ * @param {String} exposeHis
+ * @param {String} manageOrg
+ * @param {String} pastMaliGnant
+ * @param {String} smoke
+ * @param {String} passiveSmoking
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
 {
   "code": 200,
   "msg": "调用成功",
@@ -231,11 +231,11 @@ export function postHighRiskPageList(params) {
 
 /**
  * 筛查结果复审 （审核通过）
- * @param {String} id 
+ * @param {String} id
  *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
 {
   "code": 200,
   "msg": "调用成功",
@@ -252,11 +252,11 @@ export function postHighRiskApprove(params) {
 
 /**
  * 筛查结果复审 （审核不通过）
- * @param {String} id 
+ * @param {String} id
  *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
 {
   "code": 200,
   "msg": "调用成功",
@@ -273,14 +273,14 @@ export function postHighRiskRefuse(params) {
 
 /**
  * 高危人群信息提醒设置
- * @param {String} id 
- * @param {String} content 
+ * @param {String} id
+ * @param {String} content
  * @param {String} pushTime
  * @param {String} setting
- * 
+ *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
 {
   "code": 200,
   "msg": "调用成功",
@@ -297,12 +297,12 @@ export function postWarnContentSave(params) {
 
 /**
  * 高危人群信息提醒分页查询
- * @param {String} page 
- * @param {String} size 
- * 
+ * @param {String} page
+ * @param {String} size
+ *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
  {
     "code": 200,
     "msg": "调用成功",
@@ -331,10 +331,10 @@ export function postWarnContentPageList(params) {
 /**
  * 高危人群信息提醒 启用
  * @param {String} id
- * 
+ *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
  {
   "code": 200,
   "msg": "调用成功",
@@ -352,10 +352,10 @@ export function postWarnContentEnable(params) {
 /**
  * 高危人群信息提醒 禁用
  * @param {String} id
- * 
+ *
  * @method
- * 
- * @return {Object} 
+ *
+ * @return {Object}
  {
   "code": 200,
   "msg": "调用成功",
