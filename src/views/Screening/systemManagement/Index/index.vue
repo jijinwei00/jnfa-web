@@ -17,6 +17,17 @@
             v-model="searchForm.id"
           />
         </el-form-item>
+        <!-- date时间-->
+        <el-form-item label="时间">
+          <el-date-picker
+            v-model="searchForm.date"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          >
+          </el-date-picker>
+        </el-form-item>
         <!-- button -->
         <el-form-item>
           <el-button
@@ -24,8 +35,8 @@
             @click="handleSearch"
           >查询</el-button>
           <el-button
-            type="success"
-            @click="handlePush"
+            :type="pushBtnStatus ? 'success' : ''"
+            @click="handlePush('pushForm')"
           >推送</el-button>
         </el-form-item>
       </el-form>
@@ -90,6 +101,54 @@
       >
       </el-pagination>
     </div>
+
+    <!-- 推送Modal -->
+    <el-dialog
+      title="推送"
+      :visible.sync="pushVisible"
+    >
+      <el-form
+        :model="pushForm"
+        :rules="pushRuleForm"
+        label-position="left"
+        ref="pushForm"
+      >
+        <el-row>
+          <el-col :span="24">
+            <el-form-item
+              label="推送提醒内容："
+              prop="content"
+            >
+              <el-input
+                placeholder="推送提醒内容"
+                style="width:572px"
+                type="textarea"
+                v-model="pushForm.content"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              label="操作："
+              prop="operation"
+            >
+              <el-radio-group v-model="pushForm.operation">
+                <el-radio label="1">启动</el-radio>
+                <el-radio label="2">停止</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="pushVisible=false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="pushOk('pushForm')"
+        >确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -102,7 +161,8 @@ export default {
       pageNum: 1, // 查询分页
       pageSize: 5, // 查询分页
       searchForm: {
-        id: "", //id
+        id: '', //id
+        date: '',//时间
       }, //查询条件
       tableData: [
         {
@@ -138,6 +198,21 @@ export default {
       ], //table模拟数据
       currentPage: 1,
       total: 100,
+      pushBtnStatus: false,//推送按钮状态
+      pushList: [],//推送复选信息
+      pushVisible: false,//推送Modal框显示隐藏
+      pushForm: {
+        content: '',
+        operation: '1'
+      },//推送Modal form
+      pushRuleForm: {
+        content: [
+          { required: true, message: "请填写推送提醒内容", trigger: "blur" },
+        ],
+        operation: [
+          { required: true, message: "请选择", trigger: "blur" },
+        ],
+      },//推送Modal 验证
     };
   },
 
@@ -152,8 +227,21 @@ export default {
       alert("查询");
     },
     // 推送
-    handlePush() {
-      alert("推送");
+    handlePush(formName) {
+      if (this.pushBtnStatus) {
+        this.pushVisible = true
+        this.$refs[formName].resetFields();
+      }
+    },
+    //Table复选框选择
+    handleSelectionChange(val) {
+      console.log("table复选框选择----->>>>", val);
+      this.pushList = val;
+      if (val.length) {
+        this.pushBtnStatus = true;
+        return;
+      }
+      this.pushBtnStatus = false;
     },
     // 导出
     handleExport() {
@@ -168,10 +256,21 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
     },
-    //Table复选框选择
-    handleSelectionChange(val) {
-      console.log("table复选框选择----->>>>", val);
-    },
+    // 推送确定
+    pushOk(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.$message({
+            message: '推送完成!',
+            type: 'success'
+          })
+          this.pushVisible = false
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    }
   },
 };
 </script>

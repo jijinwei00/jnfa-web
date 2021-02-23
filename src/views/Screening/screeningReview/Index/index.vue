@@ -44,8 +44,8 @@
             @click="handleExport"
           >导出</el-button>
           <el-button
-            :type="examineBtnStatus ? 'primary' : ''"
-            @click="handleExamine"
+            :type="examineBtnStatus ? 'success' : ''"
+            @click="handleExamine('examineForm')"
           >审批</el-button>
         </el-form-item>
       </el-form>
@@ -281,9 +281,10 @@ export default {
       alert("导出");
     },
     // 审批
-    handleExamine() {
+    handleExamine(formName) {
       if (this.examineBtnStatus) {
         this.examineVisible = true;
+        this.$refs[formName].resetFields();
       }
     },
     //Table复选框选择
@@ -306,11 +307,16 @@ export default {
     },
     examineOk(formName) {
       this.$refs[formName].validate((valid) => {
-        this.$message({
-          message: '审批完成!',
-          type: 'success'
-        })
-        this.examineVisible = false
+        if (valid) {
+          this.$message({
+            message: '审批完成!',
+            type: 'success'
+          })
+          this.examineVisible = false
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
       });
     }
   },
