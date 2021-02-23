@@ -89,9 +89,9 @@ export default {
         let infoRes = await getInfo(res.data.token)
         if (200 == infoRes.code) {
           window.localStorage.setItem('user-info', JSON.stringify(infoRes.data))
+          this.$router.push('/home/index') // 登录成功 跳转到home页
         }
       }
-      this.$router.push('/home/index') // 登录成功 跳转到home页
     },
 
     handleLogin() {

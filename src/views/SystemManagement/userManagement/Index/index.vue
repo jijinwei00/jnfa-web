@@ -39,7 +39,7 @@
           </el-table-column>
           <el-table-column label="操作" width="auto">
             <template slot-scope="scope">
-              <el-link :underline="false" @click="handleDeleteUser(scope.row)">删除</el-link>
+              <el-link :underline="false" @click="handleDeleteUser(scope.row.id)">删除</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -56,14 +56,31 @@
         <el-form-item label="姓名">
           <el-input v-model="user.realName"/>
         </el-form-item>
+        <el-form-item label="密码">
+          <el-input v-model="user.passWord" show-password/>
+        </el-form-item>
         <el-form-item label="联系方式">
           <el-input v-model="user.telephone"/>
         </el-form-item>
-        <el-form-item label="机构名称">
-          <el-input v-model="user.orgName"/>
+        <el-form-item label="机构">
+          <el-select v-model="user.orgId" placeholder="请选择">
+            <el-option
+              v-for="org in orgList"
+              :key="org.id"
+              :label="org.name"
+              :value="org.id">
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="角色名称">
-          <el-input v-model="user.roleName"/>
+        <el-form-item label="角色">
+          <el-select v-model="user.roleId" placeholder="请选择">
+            <el-option
+              v-for="role in roleList"
+              :key="role.id"
+              :label="role.name"
+              :value="role.id">
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div style="text-align:right;">
@@ -87,14 +104,14 @@
 </template>
 
 <script>
-  import {getUsers} from '@/api/user'
+  import {getUsers,getOrgs,getRoles,confirmUser,deleteUser} from '@/api/user'
   const defaultUser = {
     id: null,
     userName: "",
     realName: "",
     telephone: "",
-    orgName: "",
-    roleName: ""
+    orgId: null,
+    roleId: null
   }
   export default {
     name: 'userManagement',
@@ -103,6 +120,8 @@
         total: 0,
         listLoading: true,
         userList: [],
+        orgList:[],
+        roleList:[],
         user:{},
         dialogVisible: false,
         dialogType: 'new',
@@ -114,6 +133,8 @@
     },
     created: function () {
       this.getUsers();
+      this.getOrgs();
+      this.getRoles();
     },
     methods: {
       async getUsers() {
@@ -123,30 +144,41 @@
         this.total = res.data.total
         this.listLoading = false
       },
-      handleDeleteUser() {
-
+      async getOrgs() {
+        const res = await getOrgs()
+        this.orgList = res.data.data
+      },
+      async getRoles() {
+        const res = await getRoles();
+        this.roleList = res.data.data;
+      },
+      async handleDeleteUser(id) {
+        await deleteUser(id);
+        this.getUsers();
       },
       handleToAddPage() {
 
       },
-      confirmUser(){
+      async confirmUser(){
+        await confirmUser(this.user)
         this.dialogVisible = false
-
+        this.getUsers()
       },
       // 每页加载几条数据
       handleSizeChange(val) {
         this.listQuery.size = val;
-        getUsers();
+        this.getUsers();
       },
       // 分页-当前页
       handleCurrentChange(val) {
         this.listQuery.page = val;
-        getUsers();
+        this.getUsers();
       },
       handleAddUser(){
         this.user = Object.assign({}, defaultUser)
         this.dialogType = 'new'
         this.dialogVisible = true
+        console.log(JSON.stringify(this.orgList))
       }
     }
   }
