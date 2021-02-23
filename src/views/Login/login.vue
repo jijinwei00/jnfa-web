@@ -32,6 +32,7 @@
         >
           <!-- 绑定验证码 -->
           <el-input
+            show-password
             type="password"
             v-model="loginForm.password"
             placeHolder='请输入密码'
@@ -91,6 +92,11 @@ export default {
           window.localStorage.setItem('user-info', JSON.stringify(infoRes.data))
           this.$router.push('/home/index') // 登录成功 跳转到home页
         }
+      } else {
+        this.$message({
+          message: '账号密码错误!',
+          type: 'error'
+        })
       }
     },
 

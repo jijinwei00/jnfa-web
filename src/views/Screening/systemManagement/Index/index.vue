@@ -35,9 +35,17 @@
             @click="handleSearch"
           >查询</el-button>
           <el-button
+            type="success"
+            @click="handleAdd('pushForm')"
+          >添加</el-button>
+          <el-button
             :type="pushBtnStatus ? 'success' : ''"
             @click="handlePush('pushForm')"
           >推送</el-button>
+          <el-button
+            :type="pushBtnStatus ? 'success' : ''"
+            @click="handleDelete('pushForm')"
+          >删除</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -65,6 +73,11 @@
           prop="id"
           label="id"
           width="150"
+        />
+        <el-table-column
+          prop="date"
+          label="时间"
+          width="300"
         />
         <el-table-column
           prop="content"
@@ -167,33 +180,39 @@ export default {
       tableData: [
         {
           key: "1",
-          id: "1000",
-          content: "天津津南项目人群关注....",
+          id: "A1003",
+          date: '2020-01-15 10:00 - 2020-02-16 11:00',
+          content: "天津津南项目人群关注....请进行查看......并进行确认审批.....了解",
         },
         {
           key: "2",
-          id: "1000",
-          content: "天津津南项目人群关注....",
+          id: "C1000",
+          date: '2020-01-15 10:00 - 2020-02-16 11:00',
+          content: "天津津南项目人群关注....请进行查看......并进行确认审批.....了解",
         },
         {
           key: "3",
-          id: "1000",
-          content: "天津津南项目人群关注....",
+          id: "D1000",
+          date: '2020-01-15 10:00 - 2020-02-16 11:00',
+          content: "天津津南项目人群关注....请进行查看......并进行确认审批.....了解",
         },
         {
           key: "4",
-          id: "1000",
-          content: "天津津南项目人群关注....",
+          id: "1QD000",
+          date: '2020-01-15 10:00 - 2020-02-16 11:00',
+          content: "天津津南项目人群关注....请进行查看......并进行确认审批.....了解",
         },
         {
           key: "5",
-          id: "1000",
-          content: "天津津南项目人群关注....",
+          id: "1SA000",
+          date: '2020-01-15 10:00 - 2020-02-16 11:00',
+          content: "天津津南项目人群关注....请进行查看......并进行确认审批.....了解",
         },
         {
           key: "6",
-          id: "1000",
-          content: "天津津南项目人群关注....",
+          id: "1ASA000",
+          date: '2020-01-15 10:00 - 2020-02-16 11:00',
+          content: "天津津南项目人群关注....请进行查看......并进行确认审批.....了解",
         },
       ], //table模拟数据
       currentPage: 1,
@@ -218,7 +237,7 @@ export default {
 
   methods: {
     //   编辑
-    handleEdit() {
+    handleEdit(index, data) {
       alert("编辑");
     },
     //   查询
@@ -231,7 +250,21 @@ export default {
       if (this.pushBtnStatus) {
         this.pushVisible = true
         this.$refs[formName].resetFields();
+        return
       }
+      alert("请选择要推送的对象");
+    },
+    // 添加
+    handleAdd() {
+      alert("添加");
+    },
+    // 删除
+    handleDelete() {
+      if (this.pushBtnStatus) {
+        alert("删除");
+        return
+      }
+      alert("请选择要删除的对象");
     },
     //Table复选框选择
     handleSelectionChange(val) {

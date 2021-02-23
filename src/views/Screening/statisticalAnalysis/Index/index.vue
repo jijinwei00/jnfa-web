@@ -51,27 +51,22 @@
           fixed
           prop="key"
           label="序号"
-          width="150"
         />
         <el-table-column
           prop="population"
           label="总人口"
-          width="150"
         />
         <el-table-column
           prop="indicators"
           label="符合指标"
-          width="150"
         />
         <el-table-column
           prop="result"
           label="筛选结果复审"
-          width="150"
         />
         <el-table-column
           prop="YesCT"
           label="已做CT"
-          width="150"
         />
         <el-table-column
           prop="NoCT"

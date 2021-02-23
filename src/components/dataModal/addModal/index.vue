@@ -1,9 +1,6 @@
 <template>
   <div class="addClass">
-    <el-button
-      type="success"
-      @click="handleToAddPage"
-    >添加</el-button>
+
     <el-dialog
       title="添加"
       :visible.sync="addVisible"
@@ -156,6 +153,10 @@
         >确 定</el-button>
       </div>
     </el-dialog>
+    <el-button
+      type="success"
+      @click="handleToAddPage('addForm')"
+    >添加</el-button>
   </div>
 </template>
 
@@ -249,8 +250,9 @@ export default {
   },
   methods: {
     //   添加
-    handleToAddPage() {
+    handleToAddPage(formName) {
       this.addVisible = true
+      this.$refs[formName].resetFields();
     },
     // 点击确定保存
     addOk(formName) {
@@ -264,7 +266,7 @@ export default {
         } else {
           this.$message({
             message: '添加失败!',
-            type: 'success'
+            type: 'error'
           });
           return false;
         }
