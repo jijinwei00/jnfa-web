@@ -1,349 +1,395 @@
 <template>
-    <div class="results-management-writings-index">
-        <div class="results-management-writings-piece results-management-writings-form">
-            <b>全部 ({{ total }})</b>
-            <el-form :inline="true" :model="searchForm" class="search-form p-r" size="mini">
-                <el-form-item>
-                    <el-input prefix-icon="el-icon-search"   placeholder="著作名称/出版社"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-input prefix-icon="el-icon-search" placeholder="发明人姓名"   class="input-with-select">
-                        <el-select   slot="append" placeholder="请选择">
-                            <el-option label="全部科室" value=""></el-option>
-                            <el-option :label="item.deptName" :value="item.deptCode" v-for="(item,index) in departmentList"
-                            :key="`literatureDeptCode${index}`"></el-option>
-                        </el-select>
-                    </el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-select   placeholder="全部角色">
-                          <el-option   
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item>
-                    <el-date-picker v-model="searchForm.publicationDate" value-format="yyyy-MM-dd" type="daterange" range-separator="至" start-placeholder="开始日期"
-                        end-placeholder="结束日期">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="handleSearch">查询</el-button>
-                    <el-button @click="handleResetSearch">重置</el-button>
-                    <el-button v-if="userInfo.userRole.indexOf('普通用户') != -1" @click="handleToAddPage">新建</el-button>
-                </el-form-item>
-            </el-form>
-        </div>
-        <div class="results-management-writings-piece">
-            <div class="results-management-writings-list">
-                <!-- 选择表格数据导出 -->
-                <div class="selectTableData" v-if="multipleSelection.length">
-                    <ul>
-                        <li>
-                            <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleToggleSelection(multipleSelection)"></el-checkbox>
-                        </li>
-                        <li>
-                            <el-select size="mini" v-model="selectTableData.type" placeholder="请选择" @change="handleSelectTableDataAll">
-                                <el-option label="全选本页数据" value="0"></el-option>
-                                <el-option label="全选所有数据" value="1"></el-option>
-                            </el-select>
-                        </li>
-                        <li>
-                            已选择 {{  selectTableData.type == '1' ? total : multipleSelection.length }} 项目
-                        </li>
-                        <li>
-                            <el-link :underline="false" type="primary" @click="handleExport">一键导出</el-link>
-                        </li>
-                        <li>
-                            <el-link :underline="false" @click="handleToggleSelection()">清空</el-link>
-                        </li>
-                    </ul>
-                </div>
-                <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" :show-header="!multipleSelection.length"
-                    @selection-change="handleSelectionChange">
-                    <el-table-column type="selection" width="55" v-if="userInfo.userRole.indexOf('项目管理员') != -1"></el-table-column>
-                    <el-table-column type="index" label="序号" width="50"></el-table-column>
-                    <el-table-column prop="literatureName" label="软著名称" width="auto"></el-table-column>
-                    <el-table-column label="著作人" width="160">
-                        <template slot-scope="scope">
-                            <div style="text-align: center;display: inline-block;" v-for=" (item,index) in scope.row.literaturePersons"
-                                :key="`literaturePersons${index}`">
-                                <p> {{ item.srAuthorPersonName }} </p>
-                                <span style="font-size: 12px; color: #1890FF;">
-                                    {{ item.srAuthorDeptName }}
-                                </span>
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="所属角色" width="auto">
-                        <template slot-scope="scope">
-                            <div style="text-align: center;display: inline-block;" v-for=" (item,index) in scope.row.literaturePersons"
-                                :key="`literaturePersons${index}`">
-                                <p> {{ item.srAuthorRoleName }} </p>
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="publisherName" label="出版社" width="160"></el-table-column>
-                    <el-table-column prop="publicationDate" label="出版日期" width="auto"></el-table-column>
-                    <el-table-column label="状态" width="100">
-                        <template slot-scope="scope">
-                            <ListStatus :rowDataStatus="`${scope.row.status}`"></ListStatus>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="操作" width="100">
-                        <template slot-scope="scope">
-                            <el-link type="primary" :underline="false" @click="handleToDetailsPage(scope.row.literatureInfoId)">详情 /</el-link>
-                            <el-link :underline="false" v-if="userInfo.userRole.indexOf('普通用户') != -1" @click="handleLiteratureDelect(scope.row)">删除</el-link>
-                            <el-link :underline="false" v-if="userInfo.userRole.indexOf('项目管理员') != -1" @click="handleExport(scope.row,'one')">导出</el-link>
-                        </template>
-                    </el-table-column>
-                </el-table>
-
-                <!-- 分页 -->
-                <div class="pagination">
-                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[5, 10]"
-                        :current-page.sync="pageNum" :page-size="5" layout="sizes, prev, pager, next" :total="total">
-                    </el-pagination>
-                </div>
-            </div>
-
-        </div>
+  <div class="executiveStatisticsIndex">
+    <!-- 查询搜索项 -->
+    <div class="executiveStatisticsIndex_query executiveStatisticsIndex_left">
+      <div
+        id="echarts_pie"
+        style="width: 600px;height:400px;"
+      ></div>
     </div>
+    <!-- table 数据展示 -->
+    <div class="executiveStatisticsIndex_right">
+      <div class="executiveStatisticsIndex_table">
+        <el-table
+          :data="tableData"
+          style="width: 100%"
+          max-height="800"
+        >
+          <el-table-column
+            prop="key"
+            label="序号"
+          />
+          <el-table-column
+            prop="wjff"
+            label="问卷发放数"
+          />
+          <el-table-column
+            prop="wjhs"
+            label="问卷回收数"
+          />
+          <el-table-column
+            prop="sfzxrs"
+            label="随访执行人数"
+          />
+          <el-table-column
+            prop="sfrs"
+            label="失访人数"
+          />
+          <el-table-column
+            prop="tfrs"
+            label="脱访人数"
+          />
+          <el-table-column
+            prop="wcrs"
+            label="完成人数"
+          />
+        </el-table>
+      </div>
+      <!-- 分页底部展示 -->
+      <div class="executiveStatisticsIndex_footer">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[10,20,30]"
+          :page-size="10"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+        >
+        </el-pagination>
+      </div>
+
+    </div>
+  </div>
 </template>
 
 <script>
-    import ListStatus from '@/components/ListStatus/listStatus.vue' // list 状态
+export default {
+  name: 'executiveStatisticsIndex',//任务管理
+  data() {
+    return {
+      total: 0, // 查询总数
+      pageNum: 1, // 查询分页
+      pageSize: 5, // 查询分页
 
-    import {
-    } from "@/api/dict.js" // 字典表接口文档
-
-    import {
-    } from "@/assets/js/dict.js" // 字典表接口文档
-
-
-    import {
-        handleDownloadFileList, // post 文件下载
-    } from "@/assets/js/publicFunctions.js"
-
-    export default {
-        name: 'resultsManagementWritingsIndex',
-        components: {
-            ListStatus, // 列表状态
-        },
-        data() {
-            return {
-                searchForm: {
-                    publicationDate: [],
-                },
-                total: 0, // 查询总数
-                pageNum: 1, // 查询分页
-                pageSize: 5, // 查询分页
-
-                 
-                departmentList: [], // 科室列表
-                tableData: [],
-
-                multipleSelection: [], // 选中的数据
-
-                checkAll: false, // 表格外checkbox表示是否全选  false 为不选 true 为全选
-                isIndeterminate: true, // 以表示 checkbox 的不确定状态  true 为不选 false 为全选
-                selectTableData: {
-                    type: '请选择'
-                }, // 查询结果的选择导出
-                fileUpdataVisible: false, // 文件导出
-            }
-        },
-        watch: {
-            // 监听表格外全选的操作
-            multipleSelection(newData, oldData) {
-                if (newData.length < this.tableData.length && newData.length > 0) {
-                    this.isIndeterminate = true;
-                    this.checkAll = false;
-                    this.selectTableData.type = '请选择';
-                }
-                if (newData.length <= 0) {
-                    this.isIndeterminate = false;
-                    this.checkAll = false;
-                    this.selectTableData.type = '请选择';
-                }
-                if (newData.length == this.tableData.length) {
-                    this.isIndeterminate = false;
-                    this.checkAll = true;
-                }
-            }
-        },
-        created: function() {
-            this.axiosGetDepartmentList(); // 初始化查询科室
-
-            this.handleSearch(); // 初始化查询列表
-        },
-        methods: {
-
-            // 表格外 select 的操作
-            handleSelectTableDataAll(val) {
-                if (val == '0') {
-                    this.$refs.multipleTable.clearSelection();
-                    this.tableData.forEach(row => {
-                        this.$refs.multipleTable.toggleRowSelection(row);
-                    });
-                } else if (val == '1') {
-                    this.$refs.multipleTable.clearSelection();
-                    this.tableData.forEach(row => {
-                        this.$refs.multipleTable.toggleRowSelection(row);
-                    });
-                }
-            },
-
-            // 表格外的选择
-            handleToggleSelection(rows) {
-                if (rows) {
-                    rows.forEach(row => {
-                        this.$refs.multipleTable.toggleRowSelection(row);
-                    });
-                } else {
-                    this.$refs.multipleTable.clearSelection();
-                }
-            },
-
-            // 表格里数据选择
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-            },
-
-            // 一键导出
-            handleExport(item,type) {
-                let postData = {
-                    infoIds: [],
-                };
-
-                if(type == 'one'){ // 表格内的单个导出
-                    postData.infoIds.push(item.literatureInfoId)
-                } else if (this.selectTableData.type != '1') {
-                    this.multipleSelection.map((i) => {
-                        postData.infoIds.push(i.literatureInfoId)
-                    })
-                }
-            },
-
-            // 表单重置
-            handleResetSearch() {
-                this.searchForm = {
-                    publicationDate:[],
-                };
-                this.handleSearch(); // 初始化查询列表
-            },
-
-            // 著作新建
-            handleToAddPage() {
-
-            },
-
-            // 著作详情
-            handleToDetailsPage(writingsId) {
-
-            },
-
-            // 表单查询
-            handleSearch() {
-                console.log('submit!');
-                let {
-                    searchForm,
-                    pageNum,
-                    pageSize
-                } = this, postData = {};
-
-                if (!Array.isArray(searchForm.publicationDate)) {
-                    searchForm.publicationDate = []
-                }
-
-                postData = searchForm;
-
-                console.log('postData ---->>>', postData)
-
-            },
-
-            // 分页
-            handleSizeChange(val) {
-                this.pageSize = val;
-                this.handleSearch()
-            },
-
-            // 分页
-            handleCurrentChange(val) {
-                this.handleSearch(val);
-            },
-        }
+      tableData: [{
+        key: '1',
+        wjff: '999',
+        wjhs: '199',
+        sfzxrs: '888',
+        sfrs: '225',
+        tfrs: '162',
+        wcrs: '163',
+      }, {
+        key: '2',
+        wjff: '999',
+        wjhs: '199',
+        sfzxrs: '888',
+        sfrs: '225',
+        tfrs: '162',
+        wcrs: '163',
+      }, {
+        key: '3',
+        wjff: '999',
+        wjhs: '199',
+        sfzxrs: '888',
+        sfrs: '225',
+        tfrs: '162',
+        wcrs: '163',
+      }, {
+        key: '4',
+        wjff: '999',
+        wjhs: '199',
+        sfzxrs: '888',
+        sfrs: '225',
+        tfrs: '162',
+        wcrs: '163',
+      }, {
+        key: '5',
+        wjff: '999',
+        wjhs: '199',
+        sfzxrs: '888',
+        sfrs: '225',
+        tfrs: '162',
+        wcrs: '163',
+      }, {
+        key: '6',
+        wjff: '999',
+        wjhs: '199',
+        sfzxrs: '888',
+        sfrs: '225',
+        tfrs: '162',
+        wcrs: '163',
+      },
+      {
+        key: '7',
+        wjff: '999',
+        wjhs: '199',
+        sfzxrs: '888',
+        sfrs: '225',
+        tfrs: '162',
+        wcrs: '163',
+      }, {
+        key: '8',
+        wjff: '999',
+        wjhs: '199',
+        sfzxrs: '888',
+        sfrs: '225',
+        tfrs: '162',
+        wcrs: '163',
+      }, {
+        key: '9',
+        wjff: '999',
+        wjhs: '199',
+        sfzxrs: '888',
+        sfrs: '225',
+        tfrs: '162',
+        wcrs: '163',
+      }, {
+        key: '10',
+        wjff: '999',
+        wjhs: '199',
+        sfzxrs: '888',
+        sfrs: '225',
+        tfrs: '162',
+        wcrs: '163',
+      }],//table模拟数据
+      currentPage: 1,
+      total: 100,
     }
+  },
+
+  methods: {
+    //  初始化echarts实例 
+    drawChart() {
+      let myChart = this.$echarts.init(document.getElementById("echarts_pie"));
+      var colorList = [{
+        type: 'linear',
+        x: 0,
+        y: 0,
+        x2: 1,
+        y2: 1,
+        colorStops: [{
+          offset: 0,
+          color: 'rgba(51,192,205,0.01)' // 0% 处的颜色
+        },
+        {
+          offset: 1,
+          color: 'rgba(51,192,205,0.57)' // 100% 处的颜色
+        }
+        ],
+        globalCoord: false // 缺省为 false
+      },
+      {
+        type: 'linear',
+        x: 1,
+        y: 0,
+        x2: 0,
+        y2: 1,
+        colorStops: [{
+          offset: 0,
+          color: 'rgba(115,172,255,0.02)' // 0% 处的颜色
+        },
+        {
+          offset: 1,
+          color: 'rgba(115,172,255,0.67)' // 100% 处的颜色
+        }
+        ],
+        globalCoord: false // 缺省为 false
+      },
+      {
+        type: 'linear',
+        x: 1,
+        y: 0,
+        x2: 0,
+        y2: 0,
+        colorStops: [{
+          offset: 0,
+          color: 'rgba(158,135,255,0.02)' // 0% 处的颜色
+        },
+        {
+          offset: 1,
+          color: 'rgba(158,135,255,0.57)' // 100% 处的颜色
+        }
+        ],
+        globalCoord: false // 缺省为 false
+      },
+      {
+        type: 'linear',
+        x: 0,
+        y: 1,
+        x2: 0,
+        y2: 0,
+        colorStops: [{
+          offset: 0,
+          color: 'rgba(252,75,75,0.01)' // 0% 处的颜色
+        },
+        {
+          offset: 1,
+          color: 'rgba(252,75,75,0.57)' // 100% 处的颜色
+        }
+        ],
+        globalCoord: false // 缺省为 false
+      },
+      {
+        type: 'linear',
+        x: 1,
+        y: 1,
+        x2: 1,
+        y2: 0,
+        colorStops: [{
+          offset: 0,
+          color: 'rgba(253,138,106,0.01)' // 0% 处的颜色
+        },
+        {
+          offset: 1,
+          color: '#FDB36ac2' // 100% 处的颜色
+        }
+        ],
+        globalCoord: false // 缺省为 false
+      },
+      {
+        type: 'linear',
+        x: 0,
+        y: 0,
+        x2: 1,
+        y2: 0,
+        colorStops: [{
+          offset: 0,
+          color: 'rgba(254,206,67,0.12)' // 0% 处的颜色
+        },
+        {
+          offset: 1,
+          color: '#FECE4391' // 100% 处的颜色
+        }
+        ],
+        globalCoord: false // 缺省为 false
+      }
+      ]
+      var colorLine = ['#33C0CD', '#73ACFF', '#9E87FF', '#FE6969', '#FDB36A', '#FECE43']
+
+      function getRich() {
+        let result = {}
+        colorLine.forEach((v, i) => {
+          result[`hr${i}`] = {
+            backgroundColor: colorLine[i],
+            borderRadius: 3,
+            width: 3,
+            height: 3,
+            padding: [3, 3, 0, -12]
+          }
+          result[`a${i}`] = {
+            padding: [8, -60, -20, -20],
+            color: colorLine[i],
+            fontSize: 12
+          }
+        })
+        return result
+      }
+      let data = [
+        { value: 335, name: '问卷发放数' },
+        { value: 310, name: '问卷回收数' },
+        { value: 274, name: '随访执行人数' },
+        { value: 235, name: '失访人数' },
+        { value: 400, name: '脱访人数' },
+        { value: 490, name: '完成人数' }
+      ].sort(function (a, b) { return a.value - b.value; })
+      data.forEach((v, i) => {
+        v.labelLine = {
+          lineStyle: {
+            width: 1,
+            color: colorLine[i]
+          }
+        }
+      })
+      let option = {
+        title: {
+          text: '随访执行统计',
+          left: 'center',
+          bottom: '0px',
+          textStyle: { //主标题文本样式
+            fontSize: 18,
+            color: '#5B9FF8',
+            fontWeight: 'normal',
+          },
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        series: [{
+          name: '执行随访统计',
+          type: 'pie',
+          radius: '60%',
+          center: ['50%', '50%'],
+          clockwise: true,
+          avoidLabelOverlap: true,
+          label: {
+            show: true,
+            position: 'outside',
+            formatter: function (params) {
+              const name = params.name
+              const percent = params.percent + '%'
+              const index = params.dataIndex
+              return [`{a${index}|${name}：${percent}}`, `{hr${index}|}`].join('\n')
+            },
+            rich: getRich()
+          },
+          itemStyle: {
+            normal: {
+              color: function (params) {
+                return colorList[params.dataIndex]
+              }
+            }
+          },
+          data,
+          roseType: 'radius'
+        }]
+      }
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+    },
+    // 每页加载几条数据
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    // 分页-当前页
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+    },
+  },
+  mounted() {
+    this.drawChart()
+  }
+}
 </script>
 
 
 <style lang="scss" scoped>
-    .results-management-writings-index {
-        padding: 20px;
-        background-color: #fff;
-
-        .results-management-writings-piece {
-
-            &.results-management-writings-form {
-                height: auto;
-                line-height: auto;
-                overflow: hidden;
-            }
-
-            .results-management-writings-list {
-                position: relative;
-
-                // 选择查询结果导出
-                .selectTableData {
-                    width: 100%;
-                    height: 48px;
-                    line-height: 48px;
-                    background-color: #F1F1F1;
-
-                    ul {
-                        overflow: hidden;
-
-                        li {
-                            float: left;
-                            margin-right: 25px;
-
-                            .el-checkbox {
-                                padding-left: 14px;
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-
-        .file-updata-dialog {
-
-            h3 {
-                overflow: hidden;
-            }
-
-            .product-scoring {
-                margin: 10px auto;
-                text-align: center;
-            }
-        }
+.executiveStatisticsIndex {
+  display: flex;
+  .executiveStatisticsIndex_query {
+    background: #fff;
+    text-align: center;
+    padding-top: 50px;
+  }
+  .executiveStatisticsIndex_left {
+    margin-right: 10px;
+  }
+  .executiveStatisticsIndex_right {
+    border-radius: 8px;
+    background: #f6fbff;
+    .executiveStatisticsIndex_table {
+      background: #fff;
     }
+    .executiveStatisticsIndex_footer {
+      background: #fff;
+    }
+  }
+}
+.line {
+  text-align: center;
+}
 </style>
 
-<style>
-    .results-management-writings-piece .input-with-select .el-select .el-input {
-        width: 90px;
-    }
 
-    .results-management-writings-piece .input-with-select .el-select .el-input input {
-        padding: 0px 10px;
-    }
-
-    .results-management-writings-piece .el-date-editor .el-range-separator{
-        width: 10%;
-    }
-
-    .results-management-writings-piece .el-date-editor--daterange.el-input__inner{
-        width: 240px;
-    }
-</style>

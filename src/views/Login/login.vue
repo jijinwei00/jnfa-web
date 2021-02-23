@@ -32,6 +32,7 @@
         >
           <!-- 绑定验证码 -->
           <el-input
+            type="password"
             v-model="loginForm.password"
             placeHolder='请输入密码'
             prefix-icon="el-icon-key"
@@ -48,7 +49,7 @@
 </template>
 
 <script>
-import { postUserLogin ,getInfo} from '../../api/loginAPI'
+import { postUserLogin, getInfo } from '../../api/loginAPI'
 export default {
   data() {
     let validator = function (rule, value, callBack) {

@@ -20,4 +20,7 @@ export default {
   color: #4d4d4d;
   background-color: #f8f8f8;
 }
+.el-table th.is-leaf {
+  background-color: #f6fbff;
+}
 </style>
