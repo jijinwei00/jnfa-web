@@ -4,13 +4,13 @@
       <b>全部 ({{ total }})</b>
       <el-form :inline="true" :model="searchForm" class="search-form p-r" size="mini">
         <el-form-item label="操作用户名">
-          <el-input prefix-icon="el-icon-search" placeholder="操作用户名"></el-input>
+          <el-input prefix-icon="el-icon-search" v-model="searchForm.userName" placeholder="操作用户名"></el-input>
         </el-form-item>
         <el-form-item label="操作内容">
-          <el-input prefix-icon="el-icon-search" placeholder="操作内容"></el-input>
+          <el-input prefix-icon="el-icon-search" v-model="searchForm.handleName" placeholder="操作名称"></el-input>
         </el-form-item>
         <el-form-item label="开始-结束日期">
-          <el-date-picker v-model="searchForm.publicationDate" value-format="yyyy-MM-dd" type="daterange"
+          <el-date-picker v-model="searchForm.dateRange" value-format="yyyy-MM-dd" type="daterange"
                           range-separator="至" start-placeholder="开始日期"
                           end-placeholder="结束日期">
           </el-date-picker>
@@ -71,7 +71,9 @@
       return {
         total: 0,
         searchForm: {
-          publicationDate: [],
+          dateRange: [],
+          userName:"",
+          handleName:""
         },
         handleLogs: [],
         listQuery: {
@@ -86,7 +88,8 @@
     methods: {
       async handleLogSearch() {
         this.listLoading = true
-        const res = await handleLogPageList(this.listQuery)
+        Object.assign(this.searchForm,this.listQuery)
+        const res = await handleLogPageList(this.searchForm)
         this.handleLogs = res.data.list
         this.total = res.data.total
         this.listLoading = false

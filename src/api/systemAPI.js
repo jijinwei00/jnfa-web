@@ -144,10 +144,10 @@ export function getUserDelete(params) {
  * @param params
  * @returns {AxiosPromise}
  */
-export function handleLogPageList(params) {
+export function handleLogPageList(searchForm) {
     return request({
         url: '/handleLog/pageList',
         method: 'POST',
-        data: params
+        data: searchForm
     })
 }
