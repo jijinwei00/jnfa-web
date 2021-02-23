@@ -33,7 +33,10 @@
           >查询</el-button>
           <!-- 添加 -->
           <add-modal />
-          <el-button @click="handleExport">导出</el-button>
+          <el-button
+            type="success"
+            @click="handleExport"
+          >导出</el-button>
         </el-form-item>
       </el-form>
     </div>

@@ -44,7 +44,10 @@
         <!-- button -->
         <el-form-item>
           <!-- 新建任务 -->
-          <el-button @click="addTask">新建任务</el-button>
+          <el-button
+            type="success"
+            @click="addTask"
+          >新建任务</el-button>
           <el-button
             type="primary"
             @click="handleSearch"

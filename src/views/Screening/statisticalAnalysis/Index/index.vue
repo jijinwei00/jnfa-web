@@ -27,8 +27,14 @@
         </el-form-item>
         <!-- button -->
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">查询</el-button>
-          <el-button @click="handleExport">导出</el-button>
+          <el-button
+            type="primary"
+            @click="handleSearch"
+          >查询</el-button>
+          <el-button
+            type="success"
+            @click="handleExport"
+          >导出</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -41,12 +47,37 @@
         ref="multipleTable"
         tooltip-effect="dark"
       >
-        <el-table-column fixed prop="key" label="序号" width="150" />
-        <el-table-column prop="population" label="总人口" width="150" />
-        <el-table-column prop="indicators" label="符合指标" width="150" />
-        <el-table-column prop="result" label="筛选结果复审" width="150" />
-        <el-table-column prop="YesCT" label="已做CT" width="150" />
-        <el-table-column prop="NoCT" label="未做CT" width="" />
+        <el-table-column
+          fixed
+          prop="key"
+          label="序号"
+          width="150"
+        />
+        <el-table-column
+          prop="population"
+          label="总人口"
+          width="150"
+        />
+        <el-table-column
+          prop="indicators"
+          label="符合指标"
+          width="150"
+        />
+        <el-table-column
+          prop="result"
+          label="筛选结果复审"
+          width="150"
+        />
+        <el-table-column
+          prop="YesCT"
+          label="已做CT"
+          width="150"
+        />
+        <el-table-column
+          prop="NoCT"
+          label="未做CT"
+          width=""
+        />
       </el-table>
     </div>
     <!-- 分页底部展示 -->

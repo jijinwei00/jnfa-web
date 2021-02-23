@@ -39,7 +39,10 @@
             type="primary"
             @click="handleSearch"
           >查询</el-button>
-          <el-button @click="handleExport">导出</el-button>
+          <el-button
+            type="success"
+            @click="handleExport"
+          >导出</el-button>
           <el-button
             :type="examineBtnStatus ? 'primary' : ''"
             @click="handleExamine"

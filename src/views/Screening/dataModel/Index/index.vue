@@ -63,7 +63,10 @@
           >查询</el-button>
           <!-- 添加 -->
           <add-modal />
-          <el-button @click="handleCustomIndicators">自定义指标</el-button>
+          <el-button
+            type="success"
+            @click="handleCustomIndicators"
+          >自定义指标</el-button>
         </el-form-item>
       </el-form>
     </div>

@@ -164,7 +164,10 @@ export default {
   border-right: 1px solid #e6e6e6;
   position: relative;
   margin: 8px;
-
+  background-image: url(../../assets/img/bg_left_img.7f363f6b.png);
+  background-repeat: no-repeat;
+  background-position-y: bottom;
+  background-size: 100%;
   .el-menu-vertical .is-active:not(.is-opened) {
     background: #a7c9ec;
     i,
@@ -181,7 +184,6 @@ export default {
       li.el-menu-item {
         height: 40px;
         line-height: 40px;
-
         &:hover,
         &.is-active {
           color: #2476c2;

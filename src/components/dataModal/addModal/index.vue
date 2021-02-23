@@ -1,6 +1,9 @@
 <template>
   <div class="addClass">
-    <el-button @click="handleToAddPage">添加</el-button>
+    <el-button
+      type="success"
+      @click="handleToAddPage"
+    >添加</el-button>
     <el-dialog
       title="添加"
       :visible.sync="addVisible"

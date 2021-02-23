@@ -19,8 +19,14 @@
         </el-form-item>
         <!-- button -->
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">查询</el-button>
-          <el-button type="primary" @click="handlePush">推送</el-button>
+          <el-button
+            type="primary"
+            @click="handleSearch"
+          >查询</el-button>
+          <el-button
+            type="success"
+            @click="handlePush"
+          >推送</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -34,11 +40,31 @@
         tooltip-effect="dark"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" />
-        <el-table-column fixed prop="key" label="序号" width="150" />
-        <el-table-column prop="id" label="id" width="150" />
-        <el-table-column prop="content" label="内容" show-overflow-tooltip width="450" />
-        <el-table-column fixed="right" label="操作">
+        <el-table-column
+          type="selection"
+          width="55"
+        />
+        <el-table-column
+          fixed
+          prop="key"
+          label="序号"
+          width="150"
+        />
+        <el-table-column
+          prop="id"
+          label="id"
+          width="150"
+        />
+        <el-table-column
+          prop="content"
+          label="内容"
+          show-overflow-tooltip
+          width="450"
+        />
+        <el-table-column
+          fixed="right"
+          label="操作"
+        >
           <template slot-scope="scope">
             <el-button
               @click.native.prevent="handleEdit(scope.$index, tableData)"
