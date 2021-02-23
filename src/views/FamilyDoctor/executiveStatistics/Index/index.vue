@@ -18,6 +18,7 @@
           <el-table-column
             prop="key"
             label="序号"
+            width="80"
           />
           <el-table-column
             prop="wjff"
@@ -368,15 +369,20 @@ export default {
 <style lang="scss" scoped>
 .executiveStatisticsIndex {
   display: flex;
+  width: 100%;
   .executiveStatisticsIndex_query {
     background: #fff;
     text-align: center;
-    padding-top: 50px;
   }
   .executiveStatisticsIndex_left {
     margin-right: 10px;
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
   }
   .executiveStatisticsIndex_right {
+    flex: 1;
     border-radius: 8px;
     background: #f6fbff;
     .executiveStatisticsIndex_table {
