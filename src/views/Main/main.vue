@@ -1,486 +1,639 @@
 <template>
-  <div class="main">
-    <div style="width:100%;height:100vh">
-      <p style=" text-align: center;color: #5B9FF8;font-size: 50px">欢迎登陆肺癌高危人群筛查系统</p>
+  <div class="main-index">
+    <div class="main-index-piece ">
+      <div class="main-index-echarts-list">
+        <div class="main-index-piece">
+          <div id="pie"></div>
+        </div>
+        <div class="main-index-piece">
+          <div class="case">
+            <b>
+              <br>
+              这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。
+              <br><br>
+              This is a description. This is a description. This is a description.
+              This is a description. This is a description. This is a description.
+              This is a description. This is a description. This is a description.
+            </b>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-index-piece">
+      <div id="line"></div>
     </div>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'Main',
-  data: function () {
-    return {
-      activeName: 'first',
-      backlogList: [], // 代办事项 list
-      researchTrendsSelectTime: '', // 科研动态的时间选择
-      templateList: [],
-      templateListTotal: '',
-      dialogTipsVisible: false, // 代办事项提示内容
-      tipsForm: {}, // 代办事项提示内容详情
+  import ListStatus from '@/components/ListStatus/listStatus.vue' // list 状态
 
-      projectsTotal: {}, // 项目总数
-      projectsTypeTotal: {}, // 不同类型的项目总数
+  import {} from "@/api/dict.js" // 字典表接口文档
 
-      xkjsDataPie: [], // 学科建设饼图
-      xkjsDataOption: '', // 学科建设选择时间
-      xkjsLegendDataPie: {
-        1: '学科专科',
-        2: '学科方向',
-      }, // 学科建设饼图
+  import {} from "@/assets/js/dict.js" // 字典表接口文档
 
-      kycgDataPie: [], // 科研成果饼图
-      kycgDataOption: '', // 科研成果选择时间
-      kycgLegendDataPie: {
-        1: '论文',
-        2: '科技成果转化',
-        3: '技术推广',
-        4: '专利成果',
-        5: '计算机软件著作权',
-        6: '著作',
-        7: '标准',
-        8: '指南',
-        9: '共识',
-        10: '会议相关',
-        11: '医学科技成果奖励',
-        12: '学会/协会任职',
-        13: '期刊杂志任职',
-        14: '学科建设',
-        15: '科研平台管理',
-        16: '横向项目',
-        17: '纵向项目',
-      }, // 科研成果饼图
 
-      selectTimeBarUser: '', // 科室 Bar 选择时间范围
-      selectTimeBarAdmin: '', // 科室 Bar 选择时间范围
-      departmentRankingList: [], // 科室排名
+  import {
+    handleDownloadFileList, // post 文件下载
+  } from "@/assets/js/publicFunctions.js"
+
+  export default {
+    name: 'resultsManagementWritingsIndex',
+    components: {
+      ListStatus, // 列表状态
+    },
+    data() {
+      return {
+        searchForm: {
+          publicationDate: [],
+        },
+        total: 0, // 查询总数
+        pageNum: 1, // 查询分页
+        pageSize: 5, // 查询分页
+
+
+        departmentList: [], // 科室列表
+        tableData: [],
+
+        multipleSelection: [], // 选中的数据
+      }
+    },
+    watch: {
+      // 监听表格外全选的操作
+      multipleSelection(newData, oldData) {
+
+      }
+    },
+    created: function() {
+      this.handleSearch(); // 初始化查询列表
+
+    },
+    mounted: function() {
+      this.handleEchartsLine(); // 饼状统计图
+
+      this.handleEchartsPie(); // 饼状统计图
+    },
+    methods: {
+      // 饼状统计图
+      handleEchartsPie() {;
+        let pieCart = this.$echarts.init(document.getElementById('pie'))
+        console.log('pie ----->', pieCart)
+        let option = {
+          color: ['#ffc770', '#47d6ff', '#479eff', 'rgba(255,255,255,.5)'],
+          title: {
+            text: '肺癌人数占比',
+            left: 'center',
+            align: 'right'
+          },
+          tooltip: {
+            trigger: 'item',
+            padding: [10, 10, 10, 10],
+            formatter: "{b} :<br/> {d}%"
+          },
+          series: [{
+            name: '',
+            type: 'pie',
+            radius: ['36%', '66%'],
+            center: ['50%', '50%'],
+            label: {
+              fontSize: 13,
+              color: '#333',
+              formatter: function(param) {
+                return param.name + '{per' + param.dataIndex + '|' + param.percent.toFixed(0) + '%}';
+              },
+              rich: {
+                per0: {
+                  padding: [0, 0, 0, 5],
+                  fontSize: 13,
+                  fontWeight: 'bold',
+                  color: '#ffc770'
+                },
+                per1: {
+                  padding: [0, 0, 0, 5],
+                  fontSize: 13,
+                  fontWeight: 'bold',
+                  color: '#47d6ff'
+                },
+                per2: {
+                  padding: [0, 0, 0, 5],
+                  fontSize: 13,
+                  fontWeight: 'bold',
+                  color: '#479eff'
+                }
+              }
+            },
+            labelLine: {
+              show: true,
+              // length: 6,
+              // length2: 15
+            },
+            data: [{
+              name: "数据模型筛选人数",
+              value: "300"
+            }, {
+              name: "筛选结果复审已推出",
+              value: "120"
+            }, {
+              name: "已做CT人数",
+              value: "556"
+            }]
+          }, {
+            type: 'pie',
+            radius: ['36%', '43%'],
+            center: ['50%', '50%'],
+            silent: true,
+            data: [{
+              name: '',
+              value: 1,
+            }]
+          }]
+        };
+
+
+        pieCart.setOption(option);
+      },
+
+      // 折线状统计图
+      handleEchartsLine() {
+        let lineCart = this.$echarts.init(document.getElementById('line'))
+        let option = {
+          title: {
+            text: '肺癌人数发展趋势',
+            left: 'center',
+            align: 'right'
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          grid: {
+            top: '16%'
+          },
+          tooltip: {
+            trigger: 'axis'
+          },
+          legend: {
+            data: ['肺癌结果复审人数', '家庭医生查询人数', '家庭医生随访答应做CT人数', '肺癌中心已做CT人数', ],
+            top: '8%'
+          },
+          toolbox: {
+            show: true,
+            feature: {
+              mark: {
+                show: true
+              },
+              dataView: {
+                show: false,
+                readOnly: true
+              },
+              magicType: {
+                show: true,
+                type: ['line', 'bar']
+              },
+              restore: {
+                show: true
+              },
+              saveAsImage: {
+                show: true
+              }
+            }
+          },
+          calculable: true,
+          xAxis: [{
+            type: 'category',
+            boundaryGap: false,
+            data: ['0:00', '4:00', '8:00', '12:00', '16:00', '20:00'],
+            axisLabel: {
+              show: true,
+              textStyle: {
+                // color: "#ebf8ac", //X轴文字颜色
+                fontSize: 16
+              }
+            },
+
+          }],
+          yAxis: [{
+            type: 'value',
+            axisLabel: {
+              formatter: '{value} ',
+              // color: '#ccc',
+              textStyle: {
+                fontSize: 16
+              }
+            },
+            axisLine: {
+              show: true,
+              lineStyle: {
+                // color: "#ccc"
+              },
+            },
+
+
+          }],
+          series: [{
+              name: '肺癌结果复审人数',
+              type: 'line',
+              smooth: true,
+              data: [0.22, 0.23, 0.36, 0.30, 0.29, 0.35, 0.2],
+              lineStyle: {
+                normal: {
+                  width: 4,
+                  color: {
+                    type: 'linear',
+
+                    colorStops: [{
+                      offset: 0,
+                      color: '#62B7F7' // 0% 处的颜色
+                    }, {
+                      offset: 1,
+                      color: '#0092f6' // 100% 处的颜色
+                    }],
+                    globalCoord: false // 缺省为 false
+                  },
+                  shadowColor: 'rgba(72,216,191, 0.3)',
+                  shadowBlur: 6,
+                  shadowOffsetY: 10
+                }
+              },
+              itemStyle: {
+                normal: {
+                  color: '#0092f6',
+                  borderWidth: 10,
+                  borderColor: "#0092f6"
+                }
+              },
+              markPoint: {
+                data: [{
+                    type: 'max',
+                    name: '最大值'
+                  },
+                  {
+                    type: 'min',
+                    name: '最小值'
+                  }
+                ]
+              },
+              markLine: {
+                data: [{
+                  type: 'average',
+                  name: '平均值'
+                }]
+              }
+            },
+            {
+              name: '家庭医生查询人数',
+              smooth: true,
+              type: 'line',
+              data: [0, -0.1, 0.08, 0.06, 0.11, 0.07, 0],
+              lineStyle: {
+                normal: {
+                  width: 4,
+                  color: {
+                    type: 'linear',
+
+                    colorStops: [{
+                      offset: 0,
+                      color: '#F7715D' // 0% 处的颜色
+                    }, {
+                      offset: 1,
+                      color: '#E3463B' // 100% 处的颜色
+                    }],
+                    globalCoord: false // 缺省为 false
+                  },
+                  shadowColor: 'rgba(72,216,191, 0.3)',
+                  shadowBlur: 6,
+                  shadowOffsetY: 10
+                }
+              },
+              itemStyle: {
+                normal: {
+                  color: '#E3463B',
+                  borderWidth: 10,
+                  borderColor: "#ED8371"
+                }
+              },
+              markPoint: {
+                data: [{
+                  name: '周最低',
+                  value: -2,
+                  xAxis: 1,
+                  yAxis: -1.5
+                }],
+              },
+              markLine: {
+                data: [{
+                  type: 'average',
+                  name: '平均值'
+                }]
+              }
+            },
+            {
+              name: '家庭医生随访答应做CT人数',
+              type: 'line',
+              smooth: true,
+              data: [0.08, 0, 0.15, 0.14, 0.16, 0.13, 0],
+              lineStyle: {
+                normal: {
+                  width: 4,
+                  color: {
+                    type: 'linear',
+
+                    colorStops: [{
+                      offset: 0,
+                      color: '#D1DB40' // 0% 处的颜色
+                    }, {
+                      offset: 1,
+                      color: '#CED627' // 100% 处的颜色
+                    }],
+                    globalCoord: false // 缺省为 false
+                  },
+                  shadowColor: 'rgba(72,216,191, 0.3)',
+                  shadowBlur: 6,
+                  shadowOffsetY: 10
+                }
+              },
+              itemStyle: {
+                normal: {
+                  color: '#CED627',
+                  borderWidth: 10,
+                  borderColor: "#EDFA67"
+                }
+              },
+              markPoint: {
+                data: [{
+                  name: '周最低',
+                  value: -2,
+                  xAxis: 1,
+                  yAxis: -1.5
+                }]
+              },
+              markLine: {
+                data: [{
+                  type: 'average',
+                  name: '平均值'
+                }]
+              }
+            },
+            {
+              name: '肺癌中心已做CT人数',
+              type: 'line',
+              smooth: true,
+              lineStyle: {
+                normal: {
+                  width: 4,
+                  color: {
+                    type: 'linear',
+
+                    colorStops: [{
+                      offset: 0,
+                      color: '#A9F387' // 0% 处的颜色
+                    }, {
+                      offset: 1,
+                      color: '#48D8BF' // 100% 处的颜色
+                    }],
+                    globalCoord: false // 缺省为 false
+                  },
+                  shadowColor: 'rgba(72,216,191, 0.3)',
+                  shadowBlur: 6,
+                  shadowOffsetY: 10
+                }
+              },
+              data: [0.12, 0.13, 0.22, 0.17, 0.2, 0.23, 0],
+              itemStyle: {
+                normal: {
+                  color: '#48D8BF',
+                  borderWidth: 10,
+                  borderColor: "#A9F387"
+                }
+              },
+              //smooth: true,
+              markPoint: {
+                data: [{
+                  name: '周最低',
+                  value: -2,
+                  xAxis: 1,
+                  yAxis: -1.5
+                }]
+              },
+              markLine: {
+                data: [{
+                  type: 'average',
+                  name: '平均值'
+                }]
+              }
+            }
+          ]
+
+        };
+
+
+        lineCart.setOption(option);
+      },
+
+      // 表单重置
+      handleResetSearch() {
+        this.searchForm = {
+          publicationDate: [],
+        };
+        this.handleSearch(); // 初始化查询列表
+      },
+
+
+      // 著作详情
+      handleToDetailsPage(writingsId) {
+
+      },
+
+      // 表单查询
+      handleSearch() {
+        console.log('submit!');
+        let {
+          searchForm,
+          pageNum,
+          pageSize
+        } = this, postData = {};
+
+        if (!Array.isArray(searchForm.publicationDate)) {
+          searchForm.publicationDate = []
+        }
+
+        postData = searchForm;
+
+        console.log('postData ---->>>', postData)
+
+      },
+
+      // 分页
+      handleSizeChange(val) {
+        this.pageSize = val;
+        this.handleSearch()
+      },
+
+      // 分页
+      handleCurrentChange(val) {
+        this.handleSearch(val);
+      },
     }
-  },
-}
+  }
 </script>
 
+
 <style lang="scss" scoped>
-.main {
-  .main-group {
-    // 评审员
-    &.main-group-assessor {
-      display: flex;
+  .main-index {
+    padding: 20px;
+    background-color: #fff;
 
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 4px;
+    .main-index-piece {
+      overflow: hidden;
 
-      & > div {
+      .main-index-echarts-list {
+        height: auto;
         overflow: hidden;
-      }
 
-      .head-icon {
-        background: #1890ff;
-        color: #fff;
-      }
-    }
-
-    // 普通用户
-    &.main-group-user {
-      ul.header {
-        overflow: hidden;
-        width: 100%;
-        height: 104px;
-        background: url(../../assets/img/home_bac.png) no-repeat 0px 0px;
-        background-size: 100% 100%;
-        color: #fff;
-        padding: 24px 0px 21px 42px;
-
-        .head-icon {
-          background: #fff;
-          color: #0cbdc0;
-          margin-right: 22px;
-        }
-
-        li {
-          width: 12.5%;
-          float: right;
-
-          div.p-l {
-            p:last-child {
-              font-size: 14px;
-              margin-top: 6px;
-            }
-          }
-
-          strong {
-            font-size: 20px;
-          }
-
-          hr {
-            margin: 6px 0;
-            width: 30px;
-            border: 1px solid #fff;
-            background-color: #fff;
-          }
-
-          span {
-            font-size: 12px;
-          }
-        }
-      }
-
-      .el-row {
-        margin-top: 6px;
-
-        .el-col {
-          span.bar-select-box {
-            position: absolute;
-            right: 10px;
-            top: 5px;
-            z-index: 999;
-          }
-
-          & > div {
-            padding: 0px 12px;
-            background-color: #fff;
-          }
-
-          .list-head {
-            height: 32px;
-            line-height: 32px;
-            overflow: hidden;
-          }
-
-          div.list {
-            font-size: 14px;
-            color: #666;
-            margin-top: 20px;
-            padding-bottom: 8px;
-            height: 180px;
-
-            .list-item {
-              height: 40px;
-              line-height: 40px;
-              border-radius: 4px;
-              position: relative;
-
-              &:hover {
-                cursor: pointer;
-                background: #eaeaea;
-              }
-            }
-
-            & > div {
-              height: 30px;
-              line-height: 30px;
-
-              span {
-                overflow: hidden;
-              }
-
-              .icon-xiangqing1 {
-                float: right;
-                font-size: 14px;
-                margin-right: 2%;
-              }
-            }
-
-            i.project {
-              width: 20px;
-              height: 20px;
-              background: url(../../assets/img/project.png) no-repeat 0px 0px;
-              background-size: 100% 100%;
-              position: absolute;
-              top: 0;
-              bottom: 0;
-              margin: auto;
-              left: 8px;
-            }
-          }
-
-          div.echars-box {
-            width: 100%;
-            height: 260px;
-
-            div {
-              width: 100%;
-              min-width: 500px;
-            }
-          }
-        }
-      }
-    }
-
-    &.main-group-admin {
-      ul.header {
-        overflow: hidden;
-        width: 100%;
-        height: 147px;
-        background: url(../../assets/img/home_bac.png) no-repeat 0px 0px;
-        background-size: 100% 100%;
-        color: #fff;
-        padding: 24px 0px 21px 42px;
-
-        .head-icon {
-          background: #fff;
-          color: #0cbdc0;
-          margin-right: 22px;
-        }
-
-        li {
-          width: 12.5%;
-          float: right;
-
-          div.p-l {
-            p:last-child {
-              font-size: 14px;
-              margin-top: 6px;
-            }
-          }
-
-          strong {
-            font-size: 20px;
-          }
-
-          hr {
-            margin: 6px 0;
-            width: 30px;
-            border: 1px solid #fff;
-            background-color: #fff;
-          }
-
-          span {
-            font-size: 12px;
-          }
-        }
-      }
-
-      ul.number-list {
-        width: 100%;
-        overflow: hidden;
-        margin-top: -38px;
-
-        li {
-          width: calc(20% - 14px);
-          height: 124px;
+        &>.main-index-piece {
+          width: 50%;
           float: left;
-          margin: 0 7px;
-          background-color: #fff;
-          padding: 20px 14px 5px;
-          font-size: 14px;
           position: relative;
 
-          span:first-child {
-            color: #999999;
+          &>#pie {
+            width: 100%;
+            height: 350px;
+          }
+        }
+
+        .case {
+          box-sizing: border-box;
+          padding: 20px;
+          width: 100%;
+          height: 350px;
+          text-align: left;
+          // background: url(images/text-bk.png) no-repeat;
+          background-size: 100% 100%;
+          overflow: hidden;
+        }
+
+
+        .case>b {
+          position: absolute;
+          animation-delay: 2s;
+          animation: cellphone 12s linear infinite 1100ms;
+          -moz-animation: cellphone 12s linear infinite 1100ms;
+          -webkit-animation: cellphone 12s linear infinite 1100ms;
+          -ms-animation: cellphone 12s linear infinite 1100ms;
+          -o-animation: cellphone 12s linear infinite 1100ms;
+        }
+
+        @keyframes cellphone {
+          0% {
+            top: 0px
           }
 
-          strong {
-            font-size: 24px;
-            color: #333333;
-            position: absolute;
-            left: 14px;
-            top: 45px;
+          100% {
+            top: -200px
+          }
+        }
+
+        @-moz-keyframes cellphone {
+          0% {
+            top: 0px
           }
 
-          i {
-            margin: auto;
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 10px;
+          100% {
+            top: -200px
+          }
+        }
+
+        @-webkit-keyframes cellphone {
+          0% {
+            top: 0px
           }
 
-          &:nth-child(1) {
-            i {
-              width: 199px;
-              height: 27px;
-              background: url(../../assets/img/home_one.png) no-repeat 0px 0px;
-              background-size: 100% 100%;
-            }
+          100% {
+            top: -200px
+          }
+        }
+
+        @-ms-keyframes cellphone {
+          0% {
+            top: 0px
           }
 
-          &:nth-child(2) {
-            i {
-              width: 199px;
-              height: 27px;
-              background: url(../../assets/img/home_two.png) no-repeat 0px 0px;
-              background-size: 100% 100%;
-            }
+          100% {
+            top: -200px
+          }
+        }
+
+        @-o-keyframes cellphone {
+          0% {
+            top: 0px
           }
 
-          &:nth-child(3) {
-            i {
-              width: 199px;
-              height: 27px;
-              background: url(../../assets/img/home_three.png) no-repeat 0px 0px;
-              background-size: 100% 100%;
-            }
-          }
-
-          &:nth-child(4) {
-            i {
-              width: 199px;
-              height: 27px;
-              background: url(../../assets/img/home_four.png) no-repeat 0px 0px;
-              background-size: 100% 100%;
-            }
-          }
-
-          &:nth-child(5) {
-            i {
-              width: 199px;
-              height: 27px;
-              background: url(../../assets/img/home_five.png) no-repeat 0px 0px;
-              background-size: 100% 100%;
-            }
+          100% {
+            top: -200px
           }
         }
       }
 
-      .echars-list-admin {
-        padding: 12px 20px;
-        margin-top: 10px;
-        background-color: #fff;
+      &>#line {
+        width: 100%;
+        height: 400px;
+        margin: 20px 0px;
+      }
 
-        .select-time {
-          position: absolute;
-          top: 12px;
-          right: 24px;
-          z-index: 999;
-        }
+      .main-index-list {
+        position: relative;
 
-        .tabs-box {
-          width: 80%;
-          float: left;
+        // 选择查询结果导出
+        .selectTableData {
+          width: 100%;
+          height: 48px;
+          line-height: 48px;
+          background-color: #F1F1F1;
 
-          .echars-box {
-            height: 240px;
-          }
-        }
-
-        .department-ranking {
-          width: 20%;
-          float: right;
-          overflow: hidden;
-          margin-top: 38px;
-          border-top: 2px solid #e4e7ed;
-          padding-top: 22px;
-
-          .department-ranking-tit {
+          ul {
             overflow: hidden;
-            line-height: 20px;
-
-            b {
-              font-size: 16px;
-            }
-
-            span.icon-xiangqing1 {
-              font-size: 14px;
-            }
-          }
-
-          .department-ranking-list {
-            margin-top: 26px;
 
             li {
-              margin: 10px 0px;
+              float: left;
+              margin-right: 25px;
 
-              span {
-                font-size: 14px;
-              }
-
-              span:first-child {
-                width: 16px;
-                height: 16px;
-                background: #f6f6f6;
-                border-radius: 50%;
-                color: #cccccc;
-                text-align: center;
-                font-size: 12px;
-              }
-            }
-
-            span:nth-child(2) {
-              margin-left: 22px;
-            }
-
-            span:last-child {
-              float: right;
-            }
-
-            li:nth-child(1),
-            li:nth-child(2),
-            li:nth-child(3) {
-              span:first-child {
-                background: #1890ff;
-                color: #fff;
+              .el-checkbox {
+                padding-left: 14px;
               }
             }
           }
         }
       }
 
-      .echars-pie-list-admin {
-        margin-top: 6px;
+    }
 
-        .el-col > div {
-          background-color: #fff;
+    .file-updata-dialog {
 
-          & > div {
-            height: 56px;
-            line-height: 56px;
-            border-bottom: 1px solid #eff3f6;
-            padding: 0 30px;
-          }
+      h3 {
+        overflow: hidden;
+      }
 
-          .echars-box {
-            height: 325px;
-            padding: 0;
-            background: #ffffff;
-          }
-        }
+      .product-scoring {
+        margin: 10px auto;
+        text-align: center;
       }
     }
   }
+</style>
 
-  .head-icon {
-    display: inline-block;
-    width: 44px;
-    height: 44px;
-    line-height: 44px;
-    border-radius: 50%;
-    margin-right: 8px;
-    text-align: center;
+<style>
+  .main-index-piece .input-with-select .el-select .el-input {
+    width: 90px;
   }
 
-  span.announcement-type {
-    // 公告类型
-    font-size: 14px;
-    font-style: inherit;
-    padding: 0px 8px;
-    height: 30px;
-    line-height: 30px;
-    margin-bottom: 5px;
-    margin-left: 8px;
-
-    &.trends {
-      // 科研动态
-      color: #1990ff;
-      background-color: #cae2f9;
-    }
-
-    &.info {
-      // 科研信息
-      color: #0dbec0;
-      background-color: #c8ebec;
-    }
-
-    &.notice {
-      // 通知通告
-      color: #fe5a28;
-      background-color: #f8d7cd;
-    }
+  .main-index-piece .input-with-select .el-select .el-input input {
+    padding: 0px 10px;
   }
-}
+
+  .main-index-piece .el-date-editor .el-range-separator {
+    width: 10%;
+  }
+
+  .main-index-piece .el-date-editor--daterange.el-input__inner {
+    width: 240px;
+  }
 </style>

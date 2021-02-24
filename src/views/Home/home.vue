@@ -60,7 +60,7 @@ export default {
     return {
       pageName: this.$route.name,
       mainContentStyle: {
-        height: 'calc(100vh - 56px - 34px - 12px)',
+        height: 'calc(100vh - 56px - 34px - 12px - 4px)',
       },
       fromPath: {},
       userInfo: {}
@@ -72,9 +72,9 @@ export default {
         console.log('标识pageNmae->>>>', n, this.pageName);
         this.pageName = n.name;
         if (this.pageName != 'main') {
-          this.mainContentStyle.height = 'calc(100vh - 56px - 34px - 22px)';
+          this.mainContentStyle.height = 'calc(100vh - 56px - 34px - 22px - 4px)';
         } else {
-          this.mainContentStyle.height = 'calc(100vh - 56px - 12px)';
+          this.mainContentStyle.height = 'calc(100vh - 56px - 12px - 4px)';
         }
       },
       deep: true,
@@ -83,9 +83,9 @@ export default {
   created: function () {
     this.userInfo = JSON.parse(window.localStorage.getItem('user-info'))
     if (this.pageName != 'main') {
-      this.mainContentStyle.height = 'calc(100vh - 56px - 34px - 22px)';
+      this.mainContentStyle.height = 'calc(100vh - 56px - 34px - 22px - 4px)';
     } else {
-      this.mainContentStyle.height = 'calc(100vh - 56px - 12px)';
+      this.mainContentStyle.height = 'calc(100vh - 56px - 12px - 4px)';
     }
   },
   methods: {
