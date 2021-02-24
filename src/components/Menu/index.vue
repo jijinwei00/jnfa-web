@@ -69,7 +69,7 @@ export default {
           name: '数据查询',
           path: '/dataQuery/index'
         }, {
-          name: '筛查结构复审',
+          name: '筛查结果复审',
           path: '/screeningReview/index'
         }, {
           name: '统计分析',
