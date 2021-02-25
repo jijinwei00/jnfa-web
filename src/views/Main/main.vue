@@ -9,11 +9,13 @@
           <div class="case">
             <b>
               <br>
-              这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。这是一段描述。
-              <br><br>
-              This is a description. This is a description. This is a description.
-              This is a description. This is a description. This is a description.
-              This is a description. This is a description. This is a description.
+              关于津南区公立医院开展肿瘤筛查活动的通知。
+              <br>
+              <br>
+              关于津南区公立医院开展肿瘤筛查活动的通知。
+              <br>
+              <br>
+              关于津南区公立医院开展肿瘤筛查活动的通知。
             </b>
           </div>
         </div>

@@ -44,7 +44,7 @@ module.exports = {
 
     proxyTable: {
       '/api': {
-        target: 'http://81.70.5.172:8331/tumor', // 服务
+        target: 'http://localhost:8331/tumor', // 服务
         secure: false, // 如果是https接口，需要配置这个参数
         changeOrigin: true, //是否跨域
         pathRewrite: {
@@ -62,7 +62,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: '/tumor/',
 
     /**
      * Source Maps

@@ -11,7 +11,7 @@ axios.defaults.withCredentials = true; //让ajax携带cookie
 if (process.env.NODE_ENV === "development") {
   axios.defaults.baseURL = '/api'
 } else {
-  axios.defaults.baseURL = '/'
+  axios.defaults.baseURL = '/tumor'
 }
 
 // http response 服务器响应拦截器，这里拦截401错误，并重新跳入登页重新获取token
