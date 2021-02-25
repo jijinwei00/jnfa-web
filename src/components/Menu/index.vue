@@ -170,7 +170,7 @@ export default {
 <style scoped lang="scss">
 .menu {
   width: auto;
-  height: calc(100vh - 56px - 16px);
+  height: calc(100vh - 56px - 16px - 4px);
   background-color: #fff;
   border-right: 1px solid #e6e6e6;
   position: relative;
