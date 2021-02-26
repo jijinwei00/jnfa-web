@@ -148,7 +148,11 @@ export default {
         }, {
           name: '操作日志查询',
           path: '/logQuery/index'
-        }]
+        },
+          {
+            name: '通知内容管理',
+            path: '/notificationArticle/index'
+          }]
       },
       ]
     };

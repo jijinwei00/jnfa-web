@@ -242,6 +242,14 @@ export default new Router({
                     title: '操作日志查询',
                     pageLevel: 1
                 },
+            },{
+              path: '/notificationArticle/index',
+              component: () => import('@/views/systemManagement/notificationArticle/index'),
+              name: 'notificationArticle',
+              meta: {
+                title: '通知内容管理',
+                pageLevel: 1
+              },
             }]
         },
     ]
