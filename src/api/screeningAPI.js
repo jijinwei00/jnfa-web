@@ -30,7 +30,7 @@ export function postIndicatorAdd(params) {
   return request({
     url: '/indicator/add',
     method: 'POST',
-    params
+    data: params
   })
 }
 
@@ -67,6 +67,17 @@ export function postIndicatorListAll(params) {
 }
 
 /**
+ * 分页查询指标
+ */
+export function postIndicatorPageList(params) {
+  return request({
+    url: '/indicator/pageList',
+    method: 'POST',
+    data: params
+  })
+}
+
+/**
  * 删除指标
  * @param {String} id
  *
@@ -79,11 +90,10 @@ export function postIndicatorListAll(params) {
   "data": null
 }
  */
-export function postIndicatordDelete(params) {
+export function postIndicatordDelete(id) {
   return request({
-    url: '/indicator/delete',
-    method: 'POST',
-    params
+    url: `/indicator/delete/${id}`,
+    method: 'POST'
   })
 }
 

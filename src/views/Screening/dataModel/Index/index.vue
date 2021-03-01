@@ -4,130 +4,108 @@
     <div class="dataModelIndex_query">
       <el-form
         :inline="true"
-        :model="searchForm"
         class="dataModelIndex_query_from p-r"
         size="mini"
         ref="searchForm"
       >
-        <!-- 姓名 -->
-        <el-form-item label="姓名">
-          <el-input
-            prefix-icon="el-icon-search"
-            placeholder="姓名"
-            v-model="searchForm.subject"
-          />
-        </el-form-item>
-        <!-- 年龄 -->
-        <el-form-item label="年龄">
-          <el-input
-            prefix-icon="el-icon-search"
-            placeholder="年龄min"
-            v-model="searchForm.minAge"
-          />
-        </el-form-item>
-        <el-form-item>
-          -
-        </el-form-item>
-        <el-form-item>
-          <el-input
-            prefix-icon="el-icon-search"
-            placeholder="年龄max"
-            v-model="searchForm.maxAge"
-          />
-        </el-form-item>
-        <el-form-item label="危险因素(至少包含以下一项危险因素）">
-          <el-checkbox-group v-model="searchForm.dangerous">
-            <el-checkbox
-              label="a)	吸烟>=20包年，其中包括戒烟时间不足15年者"
-              name="dangerous"
-            ></el-checkbox>
-            <el-checkbox
-              label="b)	被动吸烟者"
-              name="dangerous"
-            ></el-checkbox>
-            <el-checkbox
-              label="c)	有职业暴露史（石棉、铍、铀、氡等接触者）"
-              name="dangerous"
-            ></el-checkbox>
-            <el-checkbox
-              label="d)	有恶性肿瘤病史或弥漫性肺纤维化病史"
-              name="dangerous"
-            ></el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
         <!-- button -->
         <el-form-item>
           <el-button
             type="primary"
-            @click="handleSearch"
+            @click="indicatorListSearch"
           >查询</el-button>
           <!-- 添加 -->
-          <add-modal />
-          <el-button
-            type="success"
-            @click="handleCustomIndicators"
-          >自定义指标</el-button>
+          <add-modal/>
         </el-form-item>
       </el-form>
     </div>
     <!-- table 数据展示 -->
     <div class="dataModelIndex_table">
       <el-table
-        :data="tableData"
+        :data="indicatorList"
         style="width: 100%"
         max-height="400"
       >
         <el-table-column
-          fixed
-          prop="key"
+          type="index"
           label="序号"
-          width="150"
-        />
-
-        <el-table-column
-          prop="id"
-          label="ID"
-          width="120"
+          width="100"
         />
         <el-table-column
           prop="subject"
-          label="课题"
-          width="120"
-        />
+          label="主题"
+          width="300">
+          <template slot-scope="scope">
+            {{ scope.row.subject}}
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="age"
-          label="年龄"
-          width="120"
-        />
+          prop="minAge"
+          label="最小年龄"
+          width="200">
+          <template slot-scope="scope">
+            {{ scope.row.minAge}}
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="address"
-          label="地址"
-          width="300"
-        />
-
+          prop="maxAge"
+          label="最大年龄"
+          width="200">
+          <template slot-scope="scope">
+            {{ scope.row.maxAge}}
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="dangerous"
-          label="危险因素"
-          width="120"
-        />
+          prop="manageOrg"
+          label="管理机构"
+          width="300">
+          <template slot-scope="scope">
+            {{ scope.row.manageOrg}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="smoke"
+          label="吸烟"
+          width="200">
+          <template slot-scope="scope">
+            {{ scope.row.smoke}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="manageOrg"
+          label="被动吸烟"
+          width="200">
+          <template slot-scope="scope">
+            {{ scope.row.passiveSmoking}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="manageOrg"
+          label="有职业暴露史者"
+          width="200">
+          <template slot-scope="scope">
+            {{ scope.row.exposeHis}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="pastMaliGnant"
+          label="有恶性肿瘤病史"
+          width="200">
+          <template slot-scope="scope">
+            {{ scope.row.pastMaliGnant}}
+          </template>
+        </el-table-column>
         <el-table-column
           fixed="right"
           label="操作"
         >
           <template slot-scope="scope">
             <el-button
-              @click.native.prevent="handleEdit(scope.$index, tableData)"
+              @click.native.prevent="handleElete(scope.row.id)"
               type="text"
               size="small"
             >
-              编辑
-            </el-button>
-            <el-button
-              @click.native.prevent="handleElete(scope.$index, tableData)"
-              type="text"
-              size="small"
-            >
-              移除
+              删除
             </el-button>
           </template>
         </el-table-column>
@@ -138,9 +116,9 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
+        :current-page="listQuery.page"
         :page-sizes="[10,20,30]"
-        :page-size="10"
+        :page-size="listQuery.size"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       >
@@ -151,119 +129,73 @@
 </template>
 
 <script>
-export default {
-  name: 'dataModelIndex',//数据模型指标设置
-  data() {
-    return {
-      total: 0, // 查询总数
-      pageNum: 1, // 查询分页
-      pageSize: 5, // 查询分页
-      searchForm: {
-        subject: '',//课题
-        minAge: '',//最小年龄
-        maxAge: '',//最大年龄
-        dangerous: [],//危险因素
-      },//查询条件
-      tableData: [{
-        key: '1',
-        subject: '测试',
-        id: 'A001',
-        age: '50-75',
-        address: '上海市普陀区金沙江路 1518 弄',
-        dangerous: '被动吸烟',
-      }, {
-        key: '2',
-        subject: '测试',
-        id: 'A002',
-        age: '50-75',
-        address: '上海市普陀区金沙江路 1518 弄',
-        dangerous: '被动吸烟',
-      }, {
-        key: '3',
-        subject: '测试',
-        id: 'A003',
-        age: '50-75',
-        address: '上海市普陀区金沙江路 1518 弄',
-        dangerous: '被动吸烟',
-      }, {
-        key: '4',
-        subject: '测试',
-        id: 'A004',
-        age: '50-75',
-        address: '上海市普陀区金沙江路 1518 弄',
-        dangerous: '被动吸烟',
-      }, {
-        key: '5',
-        subject: '测试',
-        id: 'A005',
-        age: '50-75',
-        address: '上海市普陀区金沙江路 1518 弄',
-        dangerous: '被动吸烟',
-      }, {
-        key: '6',
-        subject: '测试',
-        id: 'A006',
-        age: '50-75',
-        address: '上海市普陀区金沙江路 1518 弄',
-        dangerous: '被动吸烟',
-      }],//table模拟数据
-      currentPage: 1,
-      total: 100,
-      addVisible: false,//添加Modal显示隐藏
-    }
-  },
+  import { postIndicatorPageList,postIndicatordDelete } from '@/api/screeningAPI'
 
-  methods: {
+  export default {
+    name: 'dataModelIndex',//数据模型指标设置
+    data() {
+      return {
+        total: 0, // 查询总数
+        indicatorList: [],//table模拟数据
+        listQuery: {
+          page: 1,
+          size: 10
+        }
+      }
+    },
+    created: function () {
+      this.indicatorListSearch(); // 初始化查询列表
+    },
 
-    //   查询
-    handleSearch() {
-      console.log('查询--->>>>', this.searchForm);
-      alert('查询')
-    },
-    // 自定义指标
-    handleCustomIndicators() {
-      alert('自定义指标')
-    },
-    // 编辑
-    handleEdit() {
-      alert('编辑')
-    },
-    // 移除
-    handleElete() {
-      alert('移除')
-      this.$message({
-        message: '删除成功!',
-        type: 'success'
-      });
-    },
-    // 每页加载几条数据
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    // 分页-当前页
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+    methods: {
+      //   查询
+      async indicatorListSearch() {
+        this.listLoading = true
+        const res = await postIndicatorPageList(this.listQuery)
+        this.indicatorList = res.data.list
+        this.total = res.data.total
+        this.listLoading = false
+      },
+      // 移除
+      async handleElete(id) {
+        await postIndicatordDelete(id);
+        this.$message({
+          message: '删除成功!',
+          type: 'success'
+        });
+      },
+      // 每页加载几条数据
+      handleSizeChange(val) {
+        this.listQuery.size = val;
+        this.indicatorListSearch();
+      },
+      // 分页-当前页
+      handleCurrentChange(val) {
+        this.listQuery.page = val;
+        this.indicatorListSearch();
+      }
     }
   }
-}
 </script>
 
 
 <style lang="scss" scoped>
-.dataModelIndex {
-  .dataModelIndex_query {
-    .dataModelIndex_query_from {
+  .dataModelIndex {
+    .dataModelIndex_query {
+      .dataModelIndex_query_from {
+        background: #fff;
+        padding: 12px 16px;
+      }
+    }
+
+    .dataModelIndex_table {
       background: #fff;
-      padding: 12px 16px;
+    }
+
+    .dataModelIndex_footer {
+      margin-top: 10px;
     }
   }
-  .dataModelIndex_table {
-    background: #fff;
-  }
-  .dataModelIndex_footer {
-    margin-top: 10px;
-  }
-}
 </style>
 
 
