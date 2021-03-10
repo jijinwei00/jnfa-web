@@ -56,52 +56,47 @@ export default {
         path: '/home/index',
       },
       {
-        name: '个案信息',
-        icon: 'el-icon-user-solid',
-        path: '/Case/case',
-      },
-      {
-        name: '肺癌筛查中心',
+        name: '基层治疗机构',
         icon: 'iconfont icon-menhuwangzhan',
         path: '/screening',
         childrens: [{
-          name: '数据模型指标设置',
-          path: '/dataModel/index'
+          name: '个案信息',
+          path: '/case/index'
         }, {
-          name: '任务管理',
+          name: '高风险底册',
           path: '/taskManagement/index'
         }, {
-          name: '数据查询',
+          name: '随访计划',
           path: '/dataQuery/index'
         }, {
-          name: '筛查结果复审',
+          name: '随访任务',
           path: '/screeningReview/index'
         }, {
-          name: '统计分析',
+          name: '工作进度',
           path: '/statisticalAnalysis/index'
         }, {
-          name: '系统管理',
+          name: '账号管理',
           path: '/systemManagement/index'
         }],
       },
       {
-        name: '家庭医生',
+        name: '肺癌筛查治疗中心',
         icon: 'iconfont icon-huabanbeifen',
         path: "/familyDoctor",
         childrens: [{
-          name: '高危人群数据查询',
+          name: '高风险底册级别设置',
           path: '/highDataQuery/index'
         }, {
-          name: '制定随访计划管理',
+          name: '制定随访计划',
           path: '/planningManagement/index'
         }, {
-          name: '随访过程跟踪',
+          name: '数据查询',
           path: '/processTracking/index'
         }, {
-          name: '随访计划提醒',
+          name: '知情同意书打印',
           path: '/planReminder/index'
         }, {
-          name: '随访执行统计',
+          name: '统计分析',
           path: '/executiveStatistics/index'
         }]
       },
@@ -110,13 +105,13 @@ export default {
         icon: 'iconfont icon-jiaoyukeyan',
         path: '/regulators',
         childrens: [{
-          name: '监测肺癌筛查中心',
+          name: '个案信息',
           path: '/screeningTests/index'
         }, {
-          name: '监测家庭医生',
+          name: '高风险底册',
           path: '/monitoringFamilyDoctors/index'
         }, {
-          name: '交叉监测表',
+          name: '随访计划',
           path: '/crossMonitoring/index'
         },
           // {

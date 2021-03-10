@@ -31,73 +31,69 @@ export default new Router({
             }]
         },
         {
-            path: '/home',
-            name: 'home',
-            component: Home,
-            children: [{
-                path: '/Case/case',
-                component: () => import('@/views/Case/case'),
-                name: 'case',
-                meta: {
-                    title: '个案信息',
-                    pageLevel: 1
-                },
-            }]
-        },
-        {
             path: '/screening',
             name: 'screening',
             component: Home,
-            redirect: '/dataModel/index',
-            children: [{
-                path: '/dataModel/index',
-                component: () => import('@/views/Screening/dataModel/Index/index'),
-                name: 'dataModel',
-                meta: {
-                    title: '数据模型指标设置',
-                    pageLevel: 1
+            redirect: '/case/index',
+            children: [
+                {
+                    path: '/case/index',
+                    component: () => import('@/views/Screening/case/Index/index'),
+                    name: 'case',
+                    meta: {
+                        title: '个案信息',
+                        pageLevel: 1
+                    },
                 },
-            }, {
-                path: '/taskManagement/index',
-                component: () => import('@/views/Screening/taskManagement/Index/index'),
-                name: 'taskManagement',
-                meta: {
-                    title: '任务管理',
-                    pageLevel: 1
-                },
-            }, {
-                path: '/dataQuery/index',
-                component: () => import('@/views/Screening/dataQuery/Index/index'),
-                name: 'dataQuery',
-                meta: {
-                    title: '数据查询',
-                    pageLevel: 1
-                },
-            }, {
-                path: '/screeningReview/index',
-                component: () => import('@/views/Screening/screeningReview/Index/index'),
-                name: 'screeningReview',
-                meta: {
-                    title: '筛查结构复审',
-                    pageLevel: 1
-                },
-            }, {
-                path: '/statisticalAnalysis/index',
-                component: () => import('@/views/Screening/statisticalAnalysis/Index/index'),
-                name: 'statisticalAnalysis',
-                meta: {
-                    title: '统计分析',
-                    pageLevel: 1
-                },
-            }, {
-                path: '/systemManagement/index',
-                component: () => import('@/views/Screening/systemManagement/Index/index'),
-                name: 'systemManagement',
-                meta: {
-                    title: '系统管理',
-                    pageLevel: 1
-                },
-            }]
+                {
+                    path: '/dataModel/index',
+                    component: () => import('@/views/Screening/dataModel/Index/index'),
+                    name: 'dataModel',
+                    meta: {
+                        title: '数据模型指标设置',
+                        pageLevel: 1
+                    },
+                }, {
+                    path: '/taskManagement/index',
+                    component: () => import('@/views/Screening/taskManagement/Index/index'),
+                    name: 'taskManagement',
+                    meta: {
+                        title: '高风险底册',
+                        pageLevel: 1
+                    },
+                }, {
+                    path: '/dataQuery/index',
+                    component: () => import('@/views/Screening/dataQuery/Index/index'),
+                    name: 'dataQuery',
+                    meta: {
+                        title: '随访计划',
+                        pageLevel: 1
+                    },
+                }, {
+                    path: '/screeningReview/index',
+                    component: () => import('@/views/Screening/screeningReview/Index/index'),
+                    name: 'screeningReview',
+                    meta: {
+                        title: '随访任务',
+                        pageLevel: 1
+                    },
+                }, {
+                    path: '/statisticalAnalysis/index',
+                    component: () => import('@/views/Screening/statisticalAnalysis/Index/index'),
+                    name: 'statisticalAnalysis',
+                    meta: {
+                        title: '工作进度',
+                        pageLevel: 1
+                    },
+                }, {
+                    path: '/systemManagement/index',
+                    component: () => import('@/views/Screening/systemManagement/Index/index'),
+                    name: 'systemManagement',
+                    meta: {
+                        title: '账号管理',
+                        pageLevel: 1
+                    },
+                }]
         },
         {
             path: '/familyDoctor',
