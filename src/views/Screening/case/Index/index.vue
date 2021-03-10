@@ -528,7 +528,7 @@
 <script>
 
 export default {
-  name: 'caseIndex',//数据查询
+  name: 'caseIndex',//个案信息
   data() {
     return {
       total: 0, // 查询总数

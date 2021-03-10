@@ -167,6 +167,7 @@
         <el-table-column
           prop="idCard"
           label="证件号码"
+          width="180"
         />
         <el-table-column
           prop="appointment"
@@ -197,7 +198,7 @@
 
 <script>
 export default {
-  name: 'taskManagementIndex',//任务管理
+  name: 'taskManagementIndex',//高风险底册
   data() {
     return {
       total: 0, // 查询总数
