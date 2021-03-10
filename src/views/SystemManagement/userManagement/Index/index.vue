@@ -3,9 +3,23 @@
     <div class="results-management-writings-piece results-management-writings-form">
       <el-form
         :inline="true"
+        :model="searchForm"
         class="search-form p-l"
         size="mini"
       >
+        <el-form-item label="用户名">
+          <el-input
+            prefix-icon="el-icon-search"
+            v-model="searchForm.userName"
+            placeholder="用户名"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            @click="getUsers"
+          >查询</el-button>
+        </el-form-item>
         <el-form-item>
           <el-button
             @click="handleAddUser"
@@ -36,10 +50,13 @@
             prop="realName"
           />
           <el-table-column
+            label="身份证号"
+            prop="idNo"
+          />
+          <el-table-column
             label="联系方式"
             prop="telephone"
           />
-
           <el-table-column
             prop="orgName"
             label="机构名称"
@@ -49,6 +66,10 @@
             label="角色名称"
           />
           <el-table-column
+            prop="comment"
+            label="备注"
+          />
+          <el-table-column
             label="操作"
             fixed="right"
           >
@@ -56,8 +77,13 @@
               <el-button
                 type="text"
                 size="small"
-                @click.native.prevent="handleDeleteUser(scope.$index, scope.row)"
+                @click.native.prevent="handleDeleteUser(scope.row.id)"
               >删除</el-button>
+              <el-button
+                type="text"
+                size="small"
+                @click.native.prevent="editPermission(scope.row.id)"
+              >分配权限</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -86,6 +112,9 @@
         </el-form-item>
         <el-form-item label="姓名">
           <el-input v-model="user.realName" />
+        </el-form-item>
+        <el-form-item label="身份证号">
+          <el-input v-model="user.idNo" />
         </el-form-item>
         <el-form-item label="密码">
           <el-input
@@ -124,6 +153,9 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="user.comment" />
+        </el-form-item>
       </el-form>
       <div
         slot="footer"
@@ -136,6 +168,43 @@
         <el-button
           type="primary"
           @click="confirmUser"
+        >确认</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog
+      :visible.sync="permissionVisible"
+      :title="'分配权限'"
+    >
+      <el-form
+        :model="user"
+        label-width="80px"
+        label-position="left"
+      >
+        <el-form-item label="权限树">
+          <el-tree
+            :data="permissionTree"
+            checkStrictly
+            show-checkbox
+            default-expand-all
+            :default-checked-keys="permissionIds"
+            node-key="value"
+            ref="tree"
+            highlight-current
+            :props="defaultProps">
+          </el-tree>
+        </el-form-item>
+      </el-form>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          type=""
+          @click="permissionVisible=false"
+        >取消</el-button>
+        <el-button
+          type="primary"
+          @click="confirmPermission"
         >确认</el-button>
       </div>
     </el-dialog>
@@ -156,14 +225,16 @@
 </template>
 
 <script>
-import { getUsers, getOrgs, getRoles, confirmUser, deleteUser } from '@/api/user'
+import { getUsers, getOrgs, getRoles, confirmUser, deleteUser ,getPermissionTree ,getPermissionIds,confirmPermission} from '@/api/user'
 const defaultUser = {
   id: null,
   userName: "",
   realName: "",
   telephone: "",
   orgId: null,
-  roleId: null
+  roleId: null,
+  idNo:"",
+  comment: ""
 }
 export default {
   name: 'userManagement',
@@ -176,10 +247,21 @@ export default {
       roleList: [],
       user: {},
       dialogVisible: false,
+      permissionVisible: false,
       dialogType: 'new',
       listQuery: {
         page: 1,
         size: 10
+      },
+      curUserId:null,
+      permissionTree: [],
+      permissionIds:[],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      searchForm: {
+        userName: ""
       },
     }
   },
@@ -187,10 +269,12 @@ export default {
     this.getUsers();
     this.getOrgs();
     this.getRoles();
+    this.getPermissionTree();
   },
   methods: {
     async getUsers() {
       this.listLoading = true
+      Object.assign(this.listQuery,this.searchForm)
       const res = await getUsers(this.listQuery)
       this.userList = res.data.list
       this.total = res.data.total
@@ -204,13 +288,15 @@ export default {
       const res = await getRoles();
       this.roleList = res.data.data;
     },
+    async getPermissionTree() {
+      const res = await getPermissionTree();
+      this.permissionTree = res.data;
+    },
     async handleDeleteUser(index, data) {
       await deleteUser(data.id);
       this.getUsers();
     },
-    handleToAddPage() {
 
-    },
     async confirmUser() {
       await confirmUser(this.user)
       this.dialogVisible = false
@@ -230,7 +316,18 @@ export default {
       this.user = Object.assign({}, defaultUser)
       this.dialogType = 'new'
       this.dialogVisible = true
-      console.log(JSON.stringify(this.orgList))
+    },
+    async editPermission(userId) {
+      this.permissionVisible = true
+      this.curUserId = userId
+      const res = await getPermissionIds(userId)
+      this.permissionIds = res.data
+    },
+    async confirmPermission() {
+      this.permissionVisible = false
+      console.log(JSON.stringify(this.curUserId+this.permissionIds))
+      this.permissionIds = this.$refs.tree.getCheckedKeys()
+      confirmPermission(this.curUserId,this.permissionIds)
     }
   }
 }

@@ -9,33 +9,8 @@
         size="mini"
         ref="searchForm"
       >
-        <!-- 姓名 -->
-        <el-form-item
-          label="姓名"
-          prop="name"
-        >
-          <el-input
-            prefix-icon="el-icon-search"
-            placeholder="姓名"
-            v-model="searchForm.name"
-          />
-        </el-form-item>
-        <!-- 身份证 -->
-        <el-form-item
-          label="身份证号码"
-          prop="idCard"
-        >
-          <el-input
-            prefix-icon="el-icon-search"
-            placeholder="身份证号码"
-            v-model="searchForm.idCard"
-          />
-        </el-form-item>
         <!-- 时间 -->
-        <el-form-item
-          label="时间"
-          prop="date"
-        >
+        <el-form-item label="时间">
           <el-date-picker
             v-model="searchForm.date"
             type="datetimerange"
@@ -45,87 +20,38 @@
           >
           </el-date-picker>
         </el-form-item>
-        <!-- 风险等级 -->
-        <el-form-item
-          label="风险等级"
-          prop="level"
-        >
+        <!-- 任务状态 -->
+        <el-form-item label="任务状态">
           <el-select
-            v-model="searchForm.level"
-            placeholder="请选择风险等级"
+            v-model="searchForm.status"
+            placeholder="请选择任务状态"
           >
             <el-option
-              label="无风险"
+              label="完成"
               value="0"
-            >无风险</el-option>
+            >完成</el-option>
             <el-option
-              label="中风险"
+              label="执行中"
               value="1"
-            >中风险</el-option>
+            >执行中</el-option>
             <el-option
-              label="高风险"
+              label="未执行"
               value="2"
-            >高风险</el-option>
+            >未执行</el-option>
           </el-select>
         </el-form-item>
-        <!-- 电话预约情况 -->
-        <el-form-item
-          label="电话预约情况"
-          prop="appointment"
-        >
-          <el-select
-            v-model="searchForm.appointment"
-            placeholder="请选择电话预约情况"
-          >
-            <el-option
-              label="是"
-              value="0"
-            >是</el-option>
-            <el-option
-              label="否"
-              value="1"
-            >否</el-option>
-          </el-select>
-        </el-form-item>
-        <!-- 预约结果 -->
-        <el-form-item
-          label="预约结果"
-          prop="appointmentRusult"
-        >
-          <el-select
-            v-model="searchForm.appointmentRusult"
-            placeholder="请选择预约结果"
-          >
-            <el-option
-              label="成功"
-              value="0"
-            >成功</el-option>
-            <el-option
-              label="等待"
-              value="1"
-            >等待</el-option>
-            <el-option
-              label="拒绝"
-              value="2"
-            >拒绝</el-option>
-          </el-select>
-        </el-form-item>
+
         <!-- button -->
         <el-form-item>
-          <!-- 查询 -->
+          <!-- 新建任务 -->
+          <el-button
+            type="success"
+            @click="addTask"
+          >新建任务</el-button>
           <el-button
             type="primary"
             @click="handleSearch"
           >查询</el-button>
-          <!-- 重置 -->
-          <el-button
-            type="primary"
-            @click="resetForm('searchForm')"
-          >重置</el-button>
-          <el-button
-            type="success"
-            @click="submit"
-          >提交</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -135,48 +61,57 @@
         :data="tableData"
         style="width: 100%"
         max-height="400"
-        @selection-change="handleSelectionChange"
       >
-        <el-table-column
-          type="selection"
-          width="55"
-        />
         <el-table-column
           fixed
           prop="key"
           label="序号"
           width="150"
         />
-        <el-table-column
-          prop="name"
-          label="姓名"
-        />
-        <el-table-column
-          prop="sex"
-          label="性别"
-        />
-        <el-table-column
-          prop="level"
-          label="风险等级"
-        />
 
         <el-table-column
-          prop="idCardType"
-          label="证件类型"
+          prop="Id"
+          label="ID"
+          width="150"
         />
         <el-table-column
-          prop="idCard"
-          label="证件号码"
-          width="180"
+          prop="subjectName"
+          label="任务名称"
+          width="200"
         />
         <el-table-column
-          prop="appointment"
-          label="电话预约情况"
+          prop="content"
+          label="任务详情"
+          width="300"
         />
         <el-table-column
-          prop="appointmentRusult"
-          label="预约结果"
-        />
+          fixed="right"
+          label="操作"
+        >
+          <template slot-scope="scope">
+            <el-button
+              @click.native.prevent="handleStart(scope.$index, tableData)"
+              type="text"
+              size="small"
+            >
+              启动
+            </el-button>
+            <el-button
+              @click.native.prevent="handleStop(scope.$index, tableData)"
+              type="text"
+              size="small"
+            >
+              停止
+            </el-button>
+            <el-button
+              @click.native.prevent="handleDelete(scope.$index, tableData)"
+              type="text"
+              size="small"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <!-- 分页底部展示 -->
@@ -198,7 +133,7 @@
 
 <script>
 export default {
-  name: 'taskManagementIndex',//高风险底册
+  name: 'taskManagementIndex',//任务管理
   data() {
     return {
       total: 0, // 查询总数
@@ -206,66 +141,38 @@ export default {
       pageSize: 5, // 查询分页
       searchForm: {
         date: '',//时间
-        level: '',//等级
-        name: '',//姓名
-        idCard: '',//身份证号码
-        appointment: '',//电话预约情况
-        appointmentRusult: '',//电话预约结果
+        status: '',//状态
       },//查询条件
       tableData: [{
         key: '1',
-        level: '高风险',
-        name: '张三',
-        sex: '男',
-        idCardType: '居民身份证',
-        idCard: '231086199602129151',
-        appointment: '是',
-        appointmentRusult: '成功',
+        Id: 'A001',
+        subjectName: '课题1',
+        content: '测试',
       }, {
         key: '2',
-        level: '高风险',
-        name: '张三',
-        sex: '男',
-        idCardType: '居民身份证',
-        idCard: '231086199602129151',
-        appointment: '是',
-        appointmentRusult: '成功',
+        Id: 'A001',
+        subjectName: '课题1',
+        content: '测试',
       }, {
         key: '3',
-        level: '高风险',
-        name: '张三',
-        sex: '男',
-        idCardType: '居民身份证',
-        idCard: '231086199602129151',
-        appointment: '是',
-        appointmentRusult: '等待',
+        Id: 'A001',
+        subjectName: '课题1',
+        content: '测试',
       }, {
         key: '4',
-        level: '高风险',
-        name: '张三',
-        sex: '男',
-        idCardType: '居民身份证',
-        idCard: '231086199602129151',
-        appointment: '是',
-        appointmentRusult: '等待',
+        Id: 'A001',
+        subjectName: '课题1',
+        content: '测试',
       }, {
         key: '5',
-        level: '高风险',
-        name: '张三',
-        sex: '男',
-        idCardType: '居民身份证',
-        idCard: '231086199602129151',
-        appointment: '是',
-        appointmentRusult: '拒绝',
+        Id: 'A001',
+        subjectName: '课题1',
+        content: '测试',
       }, {
         key: '6',
-        level: '高风险',
-        name: '张三',
-        sex: '男',
-        idCardType: '居民身份证',
-        idCard: '231086199602129151',
-        appointment: '是',
-        appointmentRusult: '等待',
+        Id: 'A001',
+        subjectName: '课题1',
+        content: '测试',
       }],//table模拟数据
       currentPage: 1,
       total: 100,
@@ -274,24 +181,27 @@ export default {
   },
 
   methods: {
-    // 重置
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    //Table复选框选择
-    handleSelectionChange(val) {
-      console.log("table复选框选择----->>>>", val);
-    },
     //   查询
     handleSearch() {
       console.log('查询--->>>>', this.searchForm);
       alert('查询')
     },
     // 自定义指标
-    submit() {
+    addTask() {
       alert('新建任务')
     },
-
+    // 启动
+    handleStart() {
+      alert('启动')
+    },
+    // 停止
+    handleStop() {
+      alert('停止')
+    },
+    // 删除
+    handleDelete() {
+      alert('删除')
+    },
     // 每页加载几条数据
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
