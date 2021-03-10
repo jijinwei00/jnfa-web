@@ -31,6 +31,20 @@ export default new Router({
             }]
         },
         {
+            path: '/home',
+            name: 'home',
+            component: Home,
+            children: [{
+                path: '/Case/case',
+                component: () => import('@/views/Case/case'),
+                name: 'case',
+                meta: {
+                    title: '个案信息',
+                    pageLevel: 1
+                },
+            }]
+        },
+        {
             path: '/screening',
             name: 'screening',
             component: Home,
@@ -242,14 +256,14 @@ export default new Router({
                     title: '操作日志查询',
                     pageLevel: 1
                 },
-            },{
-              path: '/notificationArticle/index',
-              component: () => import('@/views/systemManagement/notificationArticle/index'),
-              name: 'notificationArticle',
-              meta: {
-                title: '通知内容管理',
-                pageLevel: 1
-              },
+            }, {
+                path: '/notificationArticle/index',
+                component: () => import('@/views/systemManagement/notificationArticle/index'),
+                name: 'notificationArticle',
+                meta: {
+                    title: '通知内容管理',
+                    pageLevel: 1
+                },
             }]
         },
     ]

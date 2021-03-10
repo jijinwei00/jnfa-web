@@ -56,6 +56,11 @@ export default {
         path: '/home/index',
       },
       {
+        name: '个案信息',
+        icon: 'el-icon-user-solid',
+        path: '/Case/case',
+      },
+      {
         name: '肺癌筛查中心',
         icon: 'iconfont icon-menhuwangzhan',
         path: '/screening',
@@ -149,10 +154,10 @@ export default {
           name: '操作日志查询',
           path: '/logQuery/index'
         },
-          {
-            name: '通知内容管理',
-            path: '/notificationArticle/index'
-          }]
+        {
+          name: '通知内容管理',
+          path: '/notificationArticle/index'
+        }]
       },
       ]
     };
@@ -254,7 +259,7 @@ export default {
 </style>
 
 <style>
-.menu .el-submenu__icon-arrow {
+/* .menu .el-submenu__icon-arrow {
   right: 10px;
   top: 55%;
 }
@@ -263,5 +268,5 @@ export default {
   height: 48px;
   line-height: 48px;
   overflow: hidden;
-}
+} */
 </style>
