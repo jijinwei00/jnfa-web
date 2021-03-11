@@ -20,6 +20,14 @@
             @click="getUsers"
           >查询</el-button>
         </el-form-item>
+      </el-form>
+    </div>
+    <div class="results-management-writings-piece results-management-writings-form">
+      <el-form
+        :inline="true"
+        class="search-form p-l"
+        size="mini"
+      >
         <el-form-item>
           <el-button
             @click="handleAddUser"
@@ -77,7 +85,7 @@
               <el-button
                 type="text"
                 size="small"
-                @click.native.prevent="handleDeleteUser(scope.row.id)"
+                @click.native.prevent="handleDeleteUser(scope.$index, scope.row)"
               >删除</el-button>
               <el-button
                 type="text"
