@@ -170,129 +170,129 @@
 </template>
 
 <script>
-export default {
-  name: 'dataQueryIndex',//随访计划
-  data() {
-    return {
-      total: 0, // 查询总数
-      pageNum: 1, // 查询分页
-      pageSize: 5, // 查询分页
-      searchForm: {
-        name: '',//姓名
-        idCard: '',//身份证
-        level: '',//风险等级
-        plan: '',//治疗方案
-      },//查询条件
-      tableData: [{
-        key: '1',
-        name: '测试',
-        idCard: '231084199601291615',
-        sex: '男',
-        telephone: '17644885599',
-        level: '高风险',
-        plan: '手术治疗',
-        CT: '结节大于6mm小于15mm',
-        advice: '立即手术',
-        doctor: '张医生',
-      }, {
-        key: '2',
-        name: '测试1',
-        idCard: '231084199601291615',
-        sex: '女',
-        telephone: '17644885599',
-        level: '高风险',
-        plan: '手术治疗',
-        CT: '结节大于6mm小于15mm',
-        advice: '立即手术',
-        doctor: '张医生',
+  export default {
+    name: 'dataQueryIndex',//随访计划
+    data() {
+      return {
+        total: 0, // 查询总数
+        pageNum: 1, // 查询分页
+        pageSize: 5, // 查询分页
+        searchForm: {
+          name: '',//姓名
+          idCard: '',//身份证
+          level: '',//风险等级
+          plan: '',//治疗方案
+        },//查询条件
+        tableData: [{
+          key: '1',
+          name: '测试',
+          idCard: '231084199601291615',
+          sex: '男',
+          telephone: '17644885599',
+          level: '高风险',
+          plan: '手术治疗',
+          CT: '结节大于6mm小于15mm',
+          advice: '立即手术',
+          doctor: '张医生',
+        }, {
+          key: '2',
+          name: '测试1',
+          idCard: '231084199601291615',
+          sex: '女',
+          telephone: '17644885599',
+          level: '高风险',
+          plan: '手术治疗',
+          CT: '结节大于6mm小于15mm',
+          advice: '立即手术',
+          doctor: '张医生',
 
-      }, {
-        key: '3',
-        name: '测试',
-        idCard: '231084199601291615',
-        sex: '男',
-        telephone: '17644885599',
-        level: '高风险',
-        plan: '手术治疗',
-        CT: '结节大于6mm小于15mm',
-        advice: '立即手术',
-        doctor: '张医生',
+        }, {
+          key: '3',
+          name: '测试',
+          idCard: '231084199601291615',
+          sex: '男',
+          telephone: '17644885599',
+          level: '高风险',
+          plan: '手术治疗',
+          CT: '结节大于6mm小于15mm',
+          advice: '立即手术',
+          doctor: '张医生',
 
-      }, {
-        key: '4',
-        name: '测试',
-        idCard: '231084199601291615',
-        sex: '男',
-        telephone: '17644885599',
-        level: '高风险',
-        plan: '手术治疗',
-        CT: '结节大于6mm小于15mm',
-        advice: '立即手术',
-        doctor: '张医生',
+        }, {
+          key: '4',
+          name: '测试',
+          idCard: '231084199601291615',
+          sex: '男',
+          telephone: '17644885599',
+          level: '高风险',
+          plan: '手术治疗',
+          CT: '结节大于6mm小于15mm',
+          advice: '立即手术',
+          doctor: '张医生',
 
-      }, {
-        key: '5',
-        name: '测试',
-        idCard: '231084199601291615',
-        sex: '男',
-        telephone: '17644885599', level: '高风险',
-        plan: '手术治疗',
-        CT: '结节大于6mm小于15mm',
-        advice: '立即手术',
-        doctor: '张医生',
+        }, {
+          key: '5',
+          name: '测试',
+          idCard: '231084199601291615',
+          sex: '男',
+          telephone: '17644885599', level: '高风险',
+          plan: '手术治疗',
+          CT: '结节大于6mm小于15mm',
+          advice: '立即手术',
+          doctor: '张医生',
 
-      },],//table模拟数据
-      currentPage: 1,
-      total: 100,
-    }
-  },
+        },],//table模拟数据
+        currentPage: 1,
+        total: 100,
+      }
+    },
 
-  methods: {
-    // 重置
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    // 查看详情
-    handleTabClick(tab, event) {
-      console.log('Tab', tab, event);
-    },
-    //   查询
-    handleSearch() {
-      console.log('查询--->>>>', this.searchForm);
-      alert('查询')
-    },
-    // 导出
-    handleExport() {
-      alert('导出')
-    },
-    // 每页加载几条数据
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    // 分页-当前页
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+    methods: {
+      // 重置
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
+      // 查看详情
+      handleTabClick(tab, event) {
+        console.log('Tab', tab, event);
+      },
+      //   查询
+      handleSearch() {
+        console.log('查询--->>>>', this.searchForm);
+        alert('查询')
+      },
+      // 导出
+      handleExport() {
+        alert('导出')
+      },
+      // 每页加载几条数据
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      // 分页-当前页
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+      }
     }
   }
-}
 </script>
 
 
 <style lang="scss" scoped>
-.dataQuery {
-  .dataQuery_query {
-    .dataQuery_query_from {
+  .dataQuery {
+    .dataQuery_query {
+      .dataQuery_query_from {
+        background: #fff;
+        padding: 12px 16px;
+      }
+    }
+    .dataQuery_table {
       background: #fff;
-      padding: 12px 16px;
+    }
+    .dataQuery_footer {
+      margin-top: 10px;
     }
   }
-  .dataQuery_table {
-    background: #fff;
-  }
-  .dataQuery_footer {
-    margin-top: 10px;
-  }
-}
 </style>
 
 

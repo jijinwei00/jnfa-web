@@ -14,8 +14,7 @@
               src="../../assets/img/admin.png"
               alt=""
             >
-            <!-- <span>{{ userInfo.realName }}</span> -->
-            <span>张三</span>
+             <span>{{ userInfo.realName }}</span>
           </div>
 
           <el-link

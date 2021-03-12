@@ -86,9 +86,9 @@ export default new Router({
                         pageLevel: 1
                     },
                 }, {
-                    path: '/systemManagement/index',
-                    component: () => import('@/views/Screening/systemManagement/Index/index'),
-                    name: 'systemManagement',
+                    path: '/screening/acountManagement/index',
+                    component: () => import('@/views/Screening/acountManagement/Index/index'),
+                    name: 'acountManagement',
                     meta: {
                         title: '账号管理',
                         pageLevel: 1
@@ -140,7 +140,16 @@ export default new Router({
                     title: '统计分析',
                     pageLevel: 1
                 },
-            }]
+            },
+              {
+                path: '/familyDoctor/acountManagement/index',
+                component: () => import('@/views/Screening/acountManagement/Index/index'),
+                name: 'acountManagement',
+                meta: {
+                  title: '账号管理',
+                  pageLevel: 1
+                }
+              }]
         },
         {
             path: '/regulators',
@@ -228,7 +237,16 @@ export default new Router({
                     title: '辅助决策',
                     pageLevel: 1
                 },
-            }
+            },
+              {
+                path: '/regulators/acountManagement/index',
+                component: () => import('@/views/Screening/acountManagement/Index/index'),
+                name: 'acountManagement',
+                meta: {
+                  title: '账号管理',
+                  pageLevel: 1
+                },
+              }
             ]
         },
         {

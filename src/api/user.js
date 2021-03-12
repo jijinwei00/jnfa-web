@@ -9,7 +9,7 @@ export function getUsers(listQuery) {
   return request({
     url: '/user/pageList',
     method: 'post',
-    data: {page: listQuery.page, size: listQuery.size}
+    data: listQuery
   })
 }
 
@@ -59,5 +59,39 @@ export function deleteUser(id) {
     url: `/user/delete/${id}`,
     method: 'post',
     dataType: 'json'
+  })
+}
+/**
+ * 查找权限节点
+ * @returns
+ */
+export function getPermissionTree() {
+  return request({
+    url: '/user/permissionTree',
+    method: 'post',
+    dataType: 'json'
+  })
+}
+/**
+ * 查找权限ID
+ * @returns
+ */
+export function getPermissionIds(userId) {
+  return request({
+    url: `/user/permissionIds/${userId}`,
+    method: 'post',
+    dataType: 'json'
+  })
+}
+/**
+ * 保存权限列表
+ * @returns
+ */
+export function confirmPermission(userId,permissionIds) {
+  return request({
+    url: `/user/confirmPermission`,
+    method: 'post',
+    dataType: 'json',
+    data: {permissionIds:permissionIds,userId:userId}
   })
 }
