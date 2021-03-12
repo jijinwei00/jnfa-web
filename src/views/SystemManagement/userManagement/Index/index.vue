@@ -20,14 +20,6 @@
             @click="getUsers"
           >查询</el-button>
         </el-form-item>
-      </el-form>
-    </div>
-    <div class="results-management-writings-piece results-management-writings-form">
-      <el-form
-        :inline="true"
-        class="search-form p-l"
-        size="mini"
-      >
         <el-form-item>
           <el-button
             @click="handleAddUser"
