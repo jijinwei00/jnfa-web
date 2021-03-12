@@ -20,19 +20,22 @@
             v-model="searchForm.name"
           />
         </el-form-item>
-        <!-- 证件号码 -->
+        <!-- 身份证 -->
         <el-form-item
-          label="证件号码"
+          label="身份证号码"
           prop="idCard"
         >
           <el-input
             prefix-icon="el-icon-search"
-            placeholder="证件号码"
+            placeholder="身份证号码"
             v-model="searchForm.idCard"
           />
         </el-form-item>
         <!-- 时间 -->
-        <el-form-item label="时间">
+        <el-form-item
+          label="时间"
+          prop="date"
+        >
           <el-date-picker
             v-model="searchForm.date"
             type="datetimerange"
@@ -42,34 +45,74 @@
           >
           </el-date-picker>
         </el-form-item>
-        <!-- 任务状态 -->
-        <el-form-item label="任务状态">
+        <!-- 风险等级 -->
+        <el-form-item
+          label="风险等级"
+          prop="level"
+        >
           <el-select
-            v-model="searchForm.status"
-            placeholder="请选择任务状态"
+            v-model="searchForm.level"
+            placeholder="请选择风险等级"
           >
             <el-option
-              label="完成"
+              label="无风险"
               value="0"
-            >完成</el-option>
+            >无风险</el-option>
             <el-option
-              label="执行中"
+              label="中风险"
               value="1"
-            >执行中</el-option>
+            >中风险</el-option>
             <el-option
-              label="未执行"
+              label="高风险"
               value="2"
-            >未执行</el-option>
+            >高风险</el-option>
           </el-select>
         </el-form-item>
-
+        <!-- 电话预约情况 -->
+        <el-form-item
+          label="电话预约情况"
+          prop="appointment"
+        >
+          <el-select
+            v-model="searchForm.appointment"
+            placeholder="请选择电话预约情况"
+          >
+            <el-option
+              label="是"
+              value="0"
+            >是</el-option>
+            <el-option
+              label="否"
+              value="1"
+            >否</el-option>
+          </el-select>
+        </el-form-item>
+        <!-- 预约结果 -->
+        <el-form-item
+          label="预约结果"
+          prop="appointmentRusult"
+        >
+          <el-select
+            v-model="searchForm.appointmentRusult"
+            placeholder="请选择预约结果"
+          >
+            <el-option
+              label="成功"
+              value="0"
+            >成功</el-option>
+            <el-option
+              label="等待"
+              value="1"
+            >等待</el-option>
+            <el-option
+              label="拒绝"
+              value="2"
+            >拒绝</el-option>
+          </el-select>
+        </el-form-item>
         <!-- button -->
         <el-form-item>
-          <!-- 新建任务 -->
-          <!-- <el-button
-            type="success"
-            @click="addTask"
-          >新建任务</el-button> -->
+          <!-- 查询 -->
           <el-button
             type="primary"
             @click="handleSearch"
@@ -79,7 +122,6 @@
             type="primary"
             @click="resetForm('searchForm')"
           >重置</el-button>
-          <!-- 提交 -->
           <el-button
             type="success"
             @click="submit"
@@ -93,57 +135,47 @@
         :data="tableData"
         style="width: 100%"
         max-height="400"
+        @selection-change="handleSelectionChange"
       >
+        <el-table-column
+          type="selection"
+          width="55"
+        />
         <el-table-column
           fixed
           prop="key"
           label="序号"
           width="150"
         />
+        <el-table-column
+          prop="name"
+          label="姓名"
+        />
+        <el-table-column
+          prop="sex"
+          label="性别"
+        />
+        <el-table-column
+          prop="level"
+          label="风险等级"
+        />
 
         <el-table-column
-          prop="Id"
-          label="ID"
-          width="150"
+          prop="idCardType"
+          label="证件类型"
         />
         <el-table-column
-          prop="subjectName"
-          label="任务名称"
-          width="200"
+          prop="idCard"
+          label="证件号码"
         />
         <el-table-column
-          prop="content"
-          label="任务详情"
-          width="300"
+          prop="appointment"
+          label="电话预约情况"
         />
         <el-table-column
-          fixed="right"
-          label="操作"
-        >
-          <template slot-scope="scope">
-            <el-button
-              @click.native.prevent="handleStart(scope.$index, tableData)"
-              type="text"
-              size="small"
-            >
-              启动
-            </el-button>
-            <el-button
-              @click.native.prevent="handleStop(scope.$index, tableData)"
-              type="text"
-              size="small"
-            >
-              停止
-            </el-button>
-            <el-button
-              @click.native.prevent="handleDelete(scope.$index, tableData)"
-              type="text"
-              size="small"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
+          prop="appointmentRusult"
+          label="预约结果"
+        />
       </el-table>
     </div>
     <!-- 分页底部展示 -->
@@ -173,66 +205,89 @@ export default {
       pageSize: 5, // 查询分页
       searchForm: {
         date: '',//时间
-        status: '',//状态
+        level: '',//等级
+        name: '',//姓名
+        idCard: '',//身份证号码
+        appointment: '',//电话预约情况
+        appointmentRusult: '',//电话预约结果
       },//查询条件
       tableData: [{
         key: '1',
-        Id: 'A001',
-        subjectName: '课题1',
-        content: '测试',
+        level: '高风险',
+        name: '张三',
+        sex: '男',
+        idCardType: '居民身份证',
+        idCard: '231086199602129151',
+        appointment: '是',
+        appointmentRusult: '成功',
       }, {
         key: '2',
-        Id: 'A001',
-        subjectName: '课题1',
-        content: '测试',
+        level: '高风险',
+        name: '张三',
+        sex: '男',
+        idCardType: '居民身份证',
+        idCard: '231086199602129151',
+        appointment: '是',
+        appointmentRusult: '成功',
       }, {
         key: '3',
-        Id: 'A001',
-        subjectName: '课题1',
-        content: '测试',
+        level: '高风险',
+        name: '张三',
+        sex: '男',
+        idCardType: '居民身份证',
+        idCard: '231086199602129151',
+        appointment: '是',
+        appointmentRusult: '等待',
       }, {
         key: '4',
-        Id: 'A001',
-        subjectName: '课题1',
-        content: '测试',
+        level: '高风险',
+        name: '张三',
+        sex: '男',
+        idCardType: '居民身份证',
+        idCard: '231086199602129151',
+        appointment: '是',
+        appointmentRusult: '等待',
       }, {
         key: '5',
-        Id: 'A001',
-        subjectName: '课题1',
-        content: '测试',
+        level: '高风险',
+        name: '张三',
+        sex: '男',
+        idCardType: '居民身份证',
+        idCard: '231086199602129151',
+        appointment: '是',
+        appointmentRusult: '拒绝',
       }, {
         key: '6',
-        Id: 'A001',
-        subjectName: '课题1',
-        content: '测试',
+        level: '高风险',
+        name: '张三',
+        sex: '男',
+        idCardType: '居民身份证',
+        idCard: '231086199602129151',
+        appointment: '是',
+        appointmentRusult: '等待',
       }],//table模拟数据
       currentPage: 1,
       total: 100,
       addVisible: false,//添加Modal显示隐藏
     }
   },
-
   methods: {
+    // 重置
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    //Table复选框选择
+    handleSelectionChange(val) {
+      console.log("table复选框选择----->>>>", val);
+    },
     //   查询
     handleSearch() {
       console.log('查询--->>>>', this.searchForm);
       alert('查询')
     },
-    // 提交
+    // 自定义指标
     submit() {
-      alert('提交')
-    },
-    // 启动
-    handleStart() {
-      alert('启动')
-    },
-    // 停止
-    handleStop() {
-      alert('停止')
-    },
-    // 删除
-    handleDelete() {
-      alert('删除')
+      alert('新建任务')
     },
     // 每页加载几条数据
     handleSizeChange(val) {
@@ -263,5 +318,3 @@ export default {
   }
 }
 </style>
-
-
