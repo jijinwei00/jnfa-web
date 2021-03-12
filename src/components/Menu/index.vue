@@ -76,7 +76,7 @@ export default {
           path: '/statisticalAnalysis/index'
         }, {
           name: '账号管理',
-          path: '/systemManagement/index'
+          path: '/screening/acountManagement/index'
         }],
       },
       {
@@ -98,6 +98,9 @@ export default {
         }, {
           name: '统计分析',
           path: '/executiveStatistics/index'
+        },{
+          name: '账号管理',
+          path: '/familyDoctor/acountManagement/index'
         }]
       },
       {
@@ -113,7 +116,10 @@ export default {
         }, {
           name: '随访计划',
           path: '/crossMonitoring/index'
-        },
+        }, {
+            name: '账号管理',
+            path: '/regulators/acountManagement/index'
+          }
           // {
           //   name: '肺癌高危人群发病监测',
           //   path: '/diseaseSurveillance/index'
