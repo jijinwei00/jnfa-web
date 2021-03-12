@@ -1,333 +1,320 @@
 <template>
-  <div class="monitoring-family-doctors-index">
-    <div class="monitoring-family-doctors-index-piece ">
-      <div class="monitoring-family-doctors-index-form">
-        <el-form :model="searchForm" ref="searchForm" label-width="80px" size="mini">
-          <el-form-item label="任务ID" prop="id">
-            <el-input v-model="searchForm.id"></el-input>
-          </el-form-item>
-          <el-form-item label="指标" prop="region">
-            <el-select v-model="searchForm.region" placeholder="请选择指标" style="width: 100%;">
-              <el-option label="指标一" value="shanghai"></el-option>
-              <el-option label="指标二" value="beijing"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="活动时间" required>
-            <el-col :span="11">
-              <el-form-item prop="date1">
-                <el-date-picker type="date" placeholder="选择日期" v-model="searchForm.date1" style="width: 100%;"></el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col class="line" :span="2" style="text-align: center;">——</el-col>
-            <el-col :span="11">
-              <el-form-item prop="date2">
-                <el-time-picker placeholder="选择时间" v-model="searchForm.date2" style="width: 100%;"></el-time-picker>
-              </el-form-item>
-            </el-col>
-          </el-form-item>
-          <el-form-item style="text-align: center;">
-            <el-button type="primary" @click="submitForm('searchForm')">查询</el-button>
-            <el-button @click="resetForm('searchForm')">重置</el-button>
-            <el-button @click="resetForm('searchForm')">导出</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-      <div class="monitoring-family-doctors-index-piece">
-        <div id="pie"></div>
-      </div>
+  <div class="taskManagementIndex">
+    <!-- 查询搜索项 -->
+    <div class="taskManagementIndex_query">
+      <el-form
+        :inline="true"
+        :model="searchForm"
+        class="taskManagementIndex_query_from p-l"
+        size="mini"
+        ref="searchForm"
+      >
+        <!-- 姓名 -->
+        <el-form-item
+          label="姓名"
+          prop="name"
+        >
+          <el-input
+            prefix-icon="el-icon-search"
+            placeholder="姓名"
+            v-model="searchForm.name"
+          />
+        </el-form-item>
+        <!-- 身份证 -->
+        <el-form-item
+          label="身份证号码"
+          prop="idCard"
+        >
+          <el-input
+            prefix-icon="el-icon-search"
+            placeholder="身份证号码"
+            v-model="searchForm.idCard"
+          />
+        </el-form-item>
+        <!-- 时间 -->
+        <el-form-item
+          label="时间"
+          prop="date"
+        >
+          <el-date-picker
+            v-model="searchForm.date"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <!-- 风险等级 -->
+        <el-form-item
+          label="风险等级"
+          prop="level"
+        >
+          <el-select
+            v-model="searchForm.level"
+            placeholder="请选择风险等级"
+          >
+            <el-option
+              label="无风险"
+              value="0"
+            >无风险</el-option>
+            <el-option
+              label="中风险"
+              value="1"
+            >中风险</el-option>
+            <el-option
+              label="高风险"
+              value="2"
+            >高风险</el-option>
+          </el-select>
+        </el-form-item>
+        <!-- 电话预约情况 -->
+        <el-form-item
+          label="电话预约情况"
+          prop="appointment"
+        >
+          <el-select
+            v-model="searchForm.appointment"
+            placeholder="请选择电话预约情况"
+          >
+            <el-option
+              label="是"
+              value="0"
+            >是</el-option>
+            <el-option
+              label="否"
+              value="1"
+            >否</el-option>
+          </el-select>
+        </el-form-item>
+        <!-- 预约结果 -->
+        <el-form-item
+          label="预约结果"
+          prop="appointmentRusult"
+        >
+          <el-select
+            v-model="searchForm.appointmentRusult"
+            placeholder="请选择预约结果"
+          >
+            <el-option
+              label="成功"
+              value="0"
+            >成功</el-option>
+            <el-option
+              label="等待"
+              value="1"
+            >等待</el-option>
+            <el-option
+              label="拒绝"
+              value="2"
+            >拒绝</el-option>
+          </el-select>
+        </el-form-item>
+        <!-- button -->
+        <el-form-item>
+          <!-- 查询 -->
+          <el-button
+            type="primary"
+            @click="handleSearch"
+          >查询</el-button>
+          <!-- 重置 -->
+          <el-button
+            type="primary"
+            @click="resetForm('searchForm')"
+          >重置</el-button>
+          <el-button
+            type="success"
+            @click="submit"
+          >提交</el-button>
+        </el-form-item>
+      </el-form>
     </div>
-    <div class="monitoring-family-doctors-index-piece">
-      <div class="monitoring-family-doctors-index-list">
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%">
-          <el-table-column type="selection" width="55" v-if="userInfo.userRole.indexOf('项目管理员') != -1"></el-table-column>
-          <el-table-column label="任务ID"></el-table-column>
-          <el-table-column prop="literatureName" label="高危人群" width="auto"></el-table-column>
-          <el-table-column prop="literatureName" label="随访人群" width="auto"></el-table-column>
-          <el-table-column prop="literatureName" label="失访人群" width="auto"></el-table-column>
-          <el-table-column prop="literatureName" label="脱访人群" width="auto"></el-table-column>
-          <el-table-column label="内容" width="160">
-            <template slot-scope="scope">
-              <div style="text-align: center;display: inline-block;" v-for=" (item,index) in scope.row.literaturePersons"
-                :key="`literaturePersons${index}`">
-                <p> {{ item.srAuthorPersonName }} </p>
-                <span style="font-size: 12px; color: #1890FF;">
-                  {{ item.srAuthorDeptName }}
-                </span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="100">
-            <template slot-scope="scope">
-              <el-link type="primary" :underline="false" @click="handleToDetailsPage(scope.row.literatureInfoId)">详情</el-link>
-            </template>
-          </el-table-column>
-        </el-table>
+    <!-- table 数据展示 -->
+    <div class="taskManagementIndex_table">
+      <el-table
+        :data="tableData"
+        style="width: 100%"
+        max-height="400"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column
+          type="selection"
+          width="55"
+        />
+        <el-table-column
+          fixed
+          prop="key"
+          label="序号"
+          width="150"
+        />
+        <el-table-column
+          prop="name"
+          label="姓名"
+        />
+        <el-table-column
+          prop="sex"
+          label="性别"
+        />
+        <el-table-column
+          prop="level"
+          label="风险等级"
+        />
 
-        <!-- 分页 -->
-        <div class="pagination">
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[5, 10]"
-            :current-page.sync="pageNum" :page-size="5" layout="sizes, prev, pager, next" :total="total">
-          </el-pagination>
-        </div>
-      </div>
-
+        <el-table-column
+          prop="idCardType"
+          label="证件类型"
+        />
+        <el-table-column
+          prop="idCard"
+          label="证件号码"
+        />
+        <el-table-column
+          prop="appointment"
+          label="电话预约情况"
+        />
+        <el-table-column
+          prop="appointmentRusult"
+          label="预约结果"
+        />
+      </el-table>
+    </div>
+    <!-- 分页底部展示 -->
+    <div class="taskManagementIndex_footer">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10,20,30]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
     </div>
   </div>
+
 </template>
 
 <script>
-  import ListStatus from '@/components/ListStatus/listStatus.vue' // list 状态
-
-  import {} from "@/api/dict.js" // 字典表接口文档
-
-  import {} from "@/assets/js/dict.js" // 字典表接口文档
-
-
-  import {
-    handleDownloadFileList, // post 文件下载
-  } from "@/assets/js/publicFunctions.js"
-
-  export default {
-    name: 'resultsManagementWritingsIndex',
-    components: {
-      ListStatus, // 列表状态
+export default {
+  name: 'taskManagementIndex',//任务管理
+  data() {
+    return {
+      total: 0, // 查询总数
+      pageNum: 1, // 查询分页
+      pageSize: 5, // 查询分页
+      searchForm: {
+        date: '',//时间
+        level: '',//等级
+        name: '',//姓名
+        idCard: '',//身份证号码
+        appointment: '',//电话预约情况
+        appointmentRusult: '',//电话预约结果
+      },//查询条件
+      tableData: [{
+        key: '1',
+        level: '高风险',
+        name: '张三',
+        sex: '男',
+        idCardType: '居民身份证',
+        idCard: '231086199602129151',
+        appointment: '是',
+        appointmentRusult: '成功',
+      }, {
+        key: '2',
+        level: '高风险',
+        name: '张三',
+        sex: '男',
+        idCardType: '居民身份证',
+        idCard: '231086199602129151',
+        appointment: '是',
+        appointmentRusult: '成功',
+      }, {
+        key: '3',
+        level: '高风险',
+        name: '张三',
+        sex: '男',
+        idCardType: '居民身份证',
+        idCard: '231086199602129151',
+        appointment: '是',
+        appointmentRusult: '等待',
+      }, {
+        key: '4',
+        level: '高风险',
+        name: '张三',
+        sex: '男',
+        idCardType: '居民身份证',
+        idCard: '231086199602129151',
+        appointment: '是',
+        appointmentRusult: '等待',
+      }, {
+        key: '5',
+        level: '高风险',
+        name: '张三',
+        sex: '男',
+        idCardType: '居民身份证',
+        idCard: '231086199602129151',
+        appointment: '是',
+        appointmentRusult: '拒绝',
+      }, {
+        key: '6',
+        level: '高风险',
+        name: '张三',
+        sex: '男',
+        idCardType: '居民身份证',
+        idCard: '231086199602129151',
+        appointment: '是',
+        appointmentRusult: '等待',
+      }],//table模拟数据
+      currentPage: 1,
+      total: 100,
+      addVisible: false,//添加Modal显示隐藏
+    }
+  },
+  methods: {
+    // 重置
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
     },
-    data() {
-      return {
-        searchForm: {
-          publicationDate: [],
-        },
-        total: 0, // 查询总数
-        pageNum: 1, // 查询分页
-        pageSize: 5, // 查询分页
-
-
-        departmentList: [], // 科室列表
-        tableData: [],
-
-        multipleSelection: [], // 选中的数据
-      }
+    //Table复选框选择
+    handleSelectionChange(val) {
+      console.log("table复选框选择----->>>>", val);
     },
-    watch: {
-      // 监听表格外全选的操作
-      multipleSelection(newData, oldData) {
-
-      }
+    //   查询
+    handleSearch() {
+      console.log('查询--->>>>', this.searchForm);
+      alert('查询')
     },
-    created: function() {
-      this.handleSearch(); // 初始化查询列表
-
+    // 自定义指标
+    submit() {
+      alert('新建任务')
     },
-    mounted: function() {
-      this.handleEchartsPie(); // 饼状统计图
+    // 每页加载几条数据
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
     },
-    methods: {
-      // 饼状统计图
-      handleEchartsPie() {;
-        let pieCart = this.$echarts.init(document.getElementById('pie'))
-        console.log('pie ----->', pieCart)
-        let option = {
-          color: ['#ffc770', '#47d6ff', '#479eff', '#25ffbc', 'rgba(255,255,255,.5)'],
-          tooltip: {
-            trigger: 'item',
-            padding: [10, 10, 10, 10],
-            formatter: "{b} :<br/> {d}%"
-          },
-          series: [{
-            name: '',
-            type: 'pie',
-            radius: ['36%', '66%'],
-            center: ['50%', '50%'],
-            label: {
-              fontSize: 13,
-              color: '#333',
-              formatter: function(param) {
-                return param.name + '{per' + param.dataIndex + '|' + param.percent.toFixed(0) + '%}';
-              },
-              rich: {
-                per0: {
-                  padding: [0, 0, 0, 5],
-                  fontSize: 13,
-                  fontWeight: 'bold',
-                  color: '#ffc770'
-                },
-                per1: {
-                  padding: [0, 0, 0, 5],
-                  fontSize: 13,
-                  fontWeight: 'bold',
-                  color: '#47d6ff'
-                },
-                per2: {
-                  padding: [0, 0, 0, 5],
-                  fontSize: 13,
-                  fontWeight: 'bold',
-                  color: '#479eff'
-                }
-              }
-            },
-            labelLine: {
-              show: true,
-              // length: 6,
-              // length2: 15
-            },
-            data: [{
-              name: "高危人群",
-              value: "100"
-            }, {
-              name: "随访人群",
-              value: "120"
-            }, {
-              name: "失访人群",
-              value: "132"
-            }, {
-              name: "脱访人群",
-              value: "130"
-            } ]
-          }, {
-            type: 'pie',
-            radius: ['36%', '43%'],
-            center: ['50%', '50%'],
-            silent: true,
-            data: [{
-              name: '',
-              value: 1,
-            }]
-          }]
-        };
-
-
-        pieCart.setOption(option);
-      },
-
-      // 表单重置
-      handleResetSearch() {
-        this.searchForm = {
-          publicationDate: [],
-        };
-        this.handleSearch(); // 初始化查询列表
-      },
-
-
-      // 著作详情
-      handleToDetailsPage(writingsId) {
-
-      },
-
-      // 表单查询
-      handleSearch() {
-        console.log('submit!');
-        let {
-          searchForm,
-          pageNum,
-          pageSize
-        } = this, postData = {};
-
-        if (!Array.isArray(searchForm.publicationDate)) {
-          searchForm.publicationDate = []
-        }
-
-        postData = searchForm;
-
-        console.log('postData ---->>>', postData)
-
-      },
-
-      // 分页
-      handleSizeChange(val) {
-        this.pageSize = val;
-        this.handleSearch()
-      },
-
-      // 分页
-      handleCurrentChange(val) {
-        this.handleSearch(val);
-      },
+    // 分页-当前页
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     }
   }
+}
 </script>
 
 
 <style lang="scss" scoped>
-  .monitoring-family-doctors-index {
-    padding: 20px;
-    background-color: #fff;
-
-    .monitoring-family-doctors-index-piece {
-      overflow: hidden;
-
-      .monitoring-family-doctors-index-form {
-        width: 50%;
-        height: auto;
-        float: left;
-        padding: 80px 10px;
-
-        &+div.monitoring-family-doctors-index-piece {
-          width: 50%;
-          height: 350px;
-          float: left;
-
-          &>#pie{
-            width: 100%;
-            height: 350px;
-          }
-        }
-      }
-
-      .monitoring-family-doctors-index-list {
-        position: relative;
-
-        // 选择查询结果导出
-        .selectTableData {
-          width: 100%;
-          height: 48px;
-          line-height: 48px;
-          background-color: #F1F1F1;
-
-          ul {
-            overflow: hidden;
-
-            li {
-              float: left;
-              margin-right: 25px;
-
-              .el-checkbox {
-                padding-left: 14px;
-              }
-            }
-          }
-        }
-      }
-
-    }
-
-    .file-updata-dialog {
-
-      h3 {
-        overflow: hidden;
-      }
-
-      .product-scoring {
-        margin: 10px auto;
-        text-align: center;
-      }
+.taskManagementIndex {
+  .taskManagementIndex_query {
+    .taskManagementIndex_query_from {
+      background: #fff;
+      padding: 12px 16px;
     }
   }
-</style>
-
-<style>
-  .monitoring-family-doctors-index-piece .input-with-select .el-select .el-input {
-    width: 90px;
+  .taskManagementIndex_table {
+    background: #fff;
   }
-
-  .monitoring-family-doctors-index-piece .input-with-select .el-select .el-input input {
-    padding: 0px 10px;
+  .taskManagementIndex_footer {
+    margin-top: 10px;
   }
-
-  .monitoring-family-doctors-index-piece .el-date-editor .el-range-separator {
-    width: 10%;
-  }
-
-  .monitoring-family-doctors-index-piece .el-date-editor--daterange.el-input__inner {
-    width: 240px;
-  }
+}
 </style>

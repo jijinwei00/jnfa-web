@@ -98,7 +98,7 @@ export default {
         }, {
           name: '统计分析',
           path: '/executiveStatistics/index'
-        },{
+        }, {
           name: '账号管理',
           path: '/familyDoctor/acountManagement/index'
         }]
@@ -117,16 +117,17 @@ export default {
           name: '随访计划',
           path: '/crossMonitoring/index'
         }, {
-            name: '账号管理',
-            path: '/regulators/acountManagement/index'
-          }
+          name: '随访任务',
+          path: '/diseaseSurveillance/index'
+        }, {
+          name: '工作进度',
+          path: '/factorMonitoring/index'
+        }, {
+          name: '账号管理',
+          path: '/regulators/acountManagement/index'
+        },
+
           // {
-          //   name: '肺癌高危人群发病监测',
-          //   path: '/diseaseSurveillance/index'
-          // }, {
-          //   name: '肺癌因素监测',
-          //   path: '/factorMonitoring/index'
-          // }, {
           //   name: '趋势分析统计',
           //   path: '/trendStatistics/index'
           // }, {

@@ -1,329 +1,436 @@
 <template>
-  <div class="screening-tests-index">
-    <div class="screening-tests-index-piece ">
-      <div class="screening-tests-index-form">
-        <el-form :model="searchForm" ref="searchForm" label-width="80px" size="mini">
-          <el-form-item label="任务ID" prop="id">
-            <el-input v-model="searchForm.id"></el-input>
-          </el-form-item>
-          <el-form-item label="指标" prop="region">
-            <el-select v-model="searchForm.region" placeholder="请选择指标" style="width: 100%;">
-              <el-option label="指标一" value="shanghai"></el-option>
-              <el-option label="指标二" value="beijing"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="活动时间" required>
-            <el-col :span="11">
-              <el-form-item prop="date1">
-                <el-date-picker type="date" placeholder="选择日期" v-model="searchForm.date1" style="width: 100%;"></el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col class="line" :span="2" style="text-align: center;">——</el-col>
-            <el-col :span="11">
-              <el-form-item prop="date2">
-                <el-time-picker placeholder="选择时间" v-model="searchForm.date2" style="width: 100%;"></el-time-picker>
-              </el-form-item>
-            </el-col>
-          </el-form-item>
-          <el-form-item style="text-align: center;">
-            <el-button type="primary" @click="submitForm('searchForm')">查询</el-button>
-            <el-button @click="resetForm('searchForm')">重置</el-button>
-            <el-button @click="resetForm('searchForm')">导出</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-      <div class="screening-tests-index-piece">
-        <div id="pie"></div>
-      </div>
+  <div class="case">
+    <!-- 查询搜索项 -->
+    <div class="case_query">
+      <el-form
+        :inline="true"
+        :model="searchForm"
+        class="case_query_from p-l"
+        size="mini"
+        ref="searchForm"
+      >
+        <!-- 姓名 -->
+        <el-form-item
+          label="姓名"
+          prop="name"
+        >
+          <el-input
+            prefix-icon="el-icon-search"
+            placeholder="姓名"
+            v-model="searchForm.name"
+          />
+        </el-form-item>
+        <!-- 身份证 -->
+        <el-form-item
+          label="身份证"
+          prop="idNo"
+        >
+          <el-input
+            prefix-icon="el-icon-search"
+            placeholder="身份证"
+            v-model="searchForm.idNo"
+          />
+        </el-form-item>
+        <!-- 性别 -->
+        <el-form-item
+          label="性别"
+          prop="sex"
+        >
+          <el-select
+            prefix-icon="el-icon-search"
+            v-model="searchForm.sex"
+            placeholder="请选择性别"
+          >
+            <el-option
+              label="男"
+              value="1"
+            ></el-option>
+            <el-option
+              label="女"
+              value="2"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <!-- 年龄 -->
+        <el-form-item
+          label="年龄"
+          prop="minAge"
+          :rules="[{ type: 'number', message: '年龄必须为数字值'}]"
+        >
+          <el-input
+            type="minAge"
+            v-model.number="searchForm.minAge"
+            placeholder="请输入最小年龄"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          -
+        </el-form-item>
+        <el-form-item
+          prop="maxAge"
+          :rules="[{ type: 'number', message: '年龄必须为数字值'}]"
+        >
+          <el-input
+            type="maxAge"
+            v-model.number="searchForm.maxAge"
+            placeholder="请输入最小年龄"
+            autocomplete="off"
+          />
+        </el-form-item>
+        <!-- button -->
+        <el-form-item>
+          <!-- 查询 -->
+          <el-button
+            type="primary"
+            @click="handleSearch"
+          >查询</el-button>
+          <!-- 重置 -->
+          <el-button
+            type="primary"
+            @click="resetForm('searchForm')"
+          >重置</el-button>
+          <!-- 导出 -->
+          <el-button
+            type="success"
+            @click="handleExport"
+          >导出</el-button>
+        </el-form-item>
+      </el-form>
     </div>
-    <div class="screening-tests-index-piece">
-      <div class="screening-tests-index-list">
-        <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%">
-          <el-table-column type="selection" width="55" v-if="userInfo.userRole.indexOf('项目管理员') != -1"></el-table-column>
-          <el-table-column label="任务ID"></el-table-column>
-          <el-table-column prop="literatureName" label="数据模型筛选人数" width="auto"></el-table-column>
-          <el-table-column prop="literatureName" label="筛选结果复审已推出" width="auto"></el-table-column>
-          <el-table-column prop="literatureName" label="已做CT人数" width="auto"></el-table-column>
-          <el-table-column label="内容" width="160">
-            <template slot-scope="scope">
-              <div style="text-align: center;display: inline-block;" v-for=" (item,index) in scope.row.literaturePersons"
-                :key="`literaturePersons${index}`">
-                <p> {{ item.srAuthorPersonName }} </p>
-                <span style="font-size: 12px; color: #1890FF;">
-                  {{ item.srAuthorDeptName }}
-                </span>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="100">
-            <template slot-scope="scope">
-              <el-link type="primary" :underline="false" @click="handleToDetailsPage(scope.row.literatureInfoId)">详情</el-link>
-            </template>
-          </el-table-column>
-        </el-table>
-
-        <!-- 分页 -->
-        <div class="pagination">
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[5, 10]"
-            :current-page.sync="pageNum" :page-size="5" layout="sizes, prev, pager, next" :total="total">
-          </el-pagination>
-        </div>
-      </div>
-
+    <!-- table 数据展示 -->
+    <div class="case_table">
+      <el-table
+        :data="caseList"
+        style="width: 100%"
+        max-height="400"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column
+          type="selection"
+          width="55"
+        />
+        <el-table-column
+          type="index"
+          label="序号"
+          fixed
+        ></el-table-column>
+        <el-table-column
+          prop="name"
+          label="姓名"
+        />
+        <el-table-column
+          prop="sex"
+          label="性别"
+        />
+        <el-table-column
+          prop="cardType"
+          label="证件类型"
+        />
+        <el-table-column
+          prop="idNo"
+          label="证件号码"
+        />
+        <el-table-column
+          prop="telephone"
+          label="联系方式"
+        />
+        <el-table-column
+          fixed="right"
+          label="操作"
+        >
+          <template slot-scope="scope">
+            <el-button
+              @click.native.prevent="getCaseDetail(scope.row.id)"
+              type="text"
+              size="small"
+            >详情</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <!-- 详情 新增 编辑-->
+    <el-dialog
+      :title="'详情'"
+      :visible.sync="dialogVisible"
+      class="case_add"
+    >
+      <el-form
+        :model="caseDetail"
+        label-position="left"
+        ref="caseDetail"
+      >
+        <!-- 姓名 性别 出生日期-->
+        <el-row>
+          <el-form-item>
+            <span>姓名：</span><span class="add_content">{{caseDetail.name}}</span>
+            <span class="add_margin"></span>
+            <span>性别：</span>
+            <el-radio-group
+              v-model="caseDetail.sex"
+              disabled
+            >
+              <el-radio label="1">男</el-radio>
+              <el-radio label="2">女</el-radio>
+            </el-radio-group>
+            <span class="add_margin"></span>
+            <span>出生日期：</span><span class="add_content">{{caseDetail.birthday}}</span>
+          </el-form-item>
+        </el-row>
+        <!-- 民族  籍贯-->
+        <el-row>
+          <el-form-item>
+            <span>民族：</span><span class="add_content">{{caseDetail.nation}}</span>
+            <span class="add_margin"></span>
+            <span>籍贯：</span>
+            <span class="add_content">{{caseDetail.nativePlace}}</span>
+          </el-form-item>
+        </el-row>
+        <!--   身份证号 本人联系电话 紧急联系电话-->
+        <el-row>
+          <el-form-item>
+            <span>身份证号：</span>
+            <span class="add_content">{{caseDetail.idNo}}</span>
+            <span class="add_margin"></span>
+            <span>本人联系电话：</span><span class="add_content">{{caseDetail.telephone}}</span>
+            <span class="add_margin"></span>
+            <span>紧急联系电话：</span>
+            <span class="add_content">{{caseDetail.emergencyTel}}</span>
+          </el-form-item>
+        </el-row>
+        <!-- 常住地址 工作单位-->
+        <el-row>
+          <el-form-item>
+            <span>常住地址：</span><span class="add_content">{{caseDetail.address}}</span>
+            <span class="add_margin"></span>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item
+              label="居民健康档案编码："
+              prop="code"
+            >
+              <span class="add_content">{{caseDetail.archiveId}}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-form-item prop="smookingStatus">
+            <div>
+              <p>1、您是否吸烟（每天吸一支以上并连续或累计6个月以上者定义为吸烟）？</p>
+            </div>
+            <el-radio-group v-model="caseDetail.smookingStatus">
+              <el-radio
+                label="是，目前仍在吸烟"
+                value="1"
+              ></el-radio>
+              <el-radio
+                label="否，从不吸烟"
+                value="0"
+              ></el-radio>
+              <el-radio
+                label="以前吸，目前戒烟"
+                value="2"
+              ></el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-form-item prop="copd">
+            <div>
+              <p>2、您是否患有慢性阻塞性肺疾病？</p>
+            </div>
+            <el-radio-group v-model="caseDetail.copd">
+              <el-radio
+                label="是"
+                value="1"
+              ></el-radio>
+              <el-radio
+                label="否"
+                value="0"
+              ></el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-form-item prop="exposeHis">
+            <div>
+              <p>3、您是否有有害物质职业接触史（一年以上）？</p>
+            </div>
+            <el-radio-group v-model="caseDetail.exposePoison">
+              <el-radio
+                label="是"
+                value="1"
+              ></el-radio>
+              <el-radio
+                label="否"
+                value="0"
+              ></el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-row>
+        <el-row>
+          <el-form-item prop="pastMaliGnant">
+            <div>
+              <p>4、您的父母、子女或者兄弟姐妹（同父母）是否患有肺癌（经正规医疗机构明确诊断）？</p>
+            </div>
+            <el-radio-group v-model="caseDetail.relationSuffer">
+              <el-radio
+                label="是"
+                value="1"
+              ></el-radio>
+              <el-radio
+                label="否"
+                value="0"
+              ></el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-row>
+      </el-form>
+    </el-dialog>
+    <!-- 分页底部展示 -->
+    <div class="case_footer">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="listQuery.page"
+        :page-sizes="[10,20,30]"
+        :page-size="listQuery.size"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
     </div>
   </div>
 </template>
-
 <script>
-  import ListStatus from '@/components/ListStatus/listStatus.vue' // list 状态
+import { pageList, getCaseDetail, exportToExcel } from '@/api/case'
 
-  import {} from "@/api/dict.js" // 字典表接口文档
-
-  import {} from "@/assets/js/dict.js" // 字典表接口文档
-
-
-  import {
-    handleDownloadFileList, // post 文件下载
-  } from "@/assets/js/publicFunctions.js"
-
-  export default {
-    name: 'resultsManagementWritingsIndex',
-    components: {
-      ListStatus, // 列表状态
-    },
-    data() {
-      return {
-        searchForm: {
-          publicationDate: [],
-        },
-        total: 0, // 查询总数
-        pageNum: 1, // 查询分页
-        pageSize: 5, // 查询分页
-
-
-        departmentList: [], // 科室列表
-        tableData: [],
-
-        multipleSelection: [], // 选中的数据
+export default {
+  name: 'caseIndex',//个案信息
+  data() {
+    return {
+      searchForm: {
+        name: '',//姓名
+        idNo: '',//身份证
+        sex: null,//性别
+        minAge: null,//最小年龄
+        maxAge: null,//最大年龄
+      },//查询条件
+      total: 0, // 查询总数
+      listQuery: {
+        page: 1,
+        size: 10
+      },
+      caseList: [],
+      total: 0,
+      dialogVisible: false,//添加Modal显示隐藏
+      caseDetail: {
+        name: "",
+        sex: 0,
+        birthday: null,
+        nation: "",
+        nativePlace: "",
+        idNo: "",
+        telephone: "",
+        emergencyTel: "",
+        address: "",
+        archiveId: "",
+        smookingStatus: 0,
+        copd: 0,
+        exposePoison: 0,
+        relationSuffer: 0
       }
-    },
-    watch: {
-      // 监听表格外全选的操作
-      multipleSelection(newData, oldData) {
-
-      }
-    },
-    created: function() {
-      this.handleSearch(); // 初始化查询列表
-
-    },
-    mounted: function() {
-      this.handleEchartsPie(); // 饼状统计图
-    },
-    methods: {
-      // 饼状统计图
-      handleEchartsPie() {;
-        let pieCart = this.$echarts.init(document.getElementById('pie'))
-        console.log('pie ----->', pieCart)
-        let option = {
-          color: ['#ffc770', '#47d6ff', '#479eff', 'rgba(255,255,255,.5)'],
-          tooltip: {
-            trigger: 'item',
-            padding: [10, 10, 10, 10],
-            formatter: "{b} :<br/> {d}%"
-          },
-          series: [{
-            name: '',
-            type: 'pie',
-            radius: ['36%', '66%'],
-            center: ['50%', '50%'],
-            label: {
-              fontSize: 13,
-              color: '#333',
-              formatter: function(param) {
-                return param.name + '{per' + param.dataIndex + '|' + param.percent.toFixed(0) + '%}';
-              },
-              rich: {
-                per0: {
-                  padding: [0, 0, 0, 5],
-                  fontSize: 13,
-                  fontWeight: 'bold',
-                  color: '#ffc770'
-                },
-                per1: {
-                  padding: [0, 0, 0, 5],
-                  fontSize: 13,
-                  fontWeight: 'bold',
-                  color: '#47d6ff'
-                },
-                per2: {
-                  padding: [0, 0, 0, 5],
-                  fontSize: 13,
-                  fontWeight: 'bold',
-                  color: '#479eff'
-                }
-              }
-            },
-            labelLine: {
-              show: true,
-              // length: 6,
-              // length2: 15
-            },
-            data: [{
-              name: "数据模型筛选人数",
-              value: "300"
-            }, {
-              name: "筛选结果复审已推出",
-              value: "120"
-            }, {
-              name: "已做CT人数",
-              value: "556"
-            }]
-          }, {
-            type: 'pie',
-            radius: ['36%', '43%'],
-            center: ['50%', '50%'],
-            silent: true,
-            data: [{
-              name: '',
-              value: 1,
-            }]
-          }]
-        };
-
-
-        pieCart.setOption(option);
-      },
-
-      // 表单重置
-      handleResetSearch() {
-        this.searchForm = {
-          publicationDate: [],
-        };
-        this.handleSearch(); // 初始化查询列表
-      },
-
-
-      // 著作详情
-      handleToDetailsPage(writingsId) {
-
-      },
-
-      // 表单查询
-      handleSearch() {
-        console.log('submit!');
-        let {
-          searchForm,
-          pageNum,
-          pageSize
-        } = this, postData = {};
-
-        if (!Array.isArray(searchForm.publicationDate)) {
-          searchForm.publicationDate = []
-        }
-
-        postData = searchForm;
-
-        console.log('postData ---->>>', postData)
-
-      },
-
-      // 分页
-      handleSizeChange(val) {
-        this.pageSize = val;
-        this.handleSearch()
-      },
-
-      // 分页
-      handleCurrentChange(val) {
-        this.handleSearch(val);
-      },
     }
+  },
+  created: function () {
+    this.handleSearch()
+  },
+
+  methods: {
+    //Table复选框选择
+    handleSelectionChange(val) {
+      console.log("table复选框选择----->>>>", val);
+    },
+
+    //   查询
+    async handleSearch() {
+      Object.assign(this.listQuery, this.searchForm)
+      const res = await pageList(this.listQuery)
+      this.caseList = res.data.list
+      this.total = res.data.total
+    },
+    // 重置
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    // 新增 详情 编辑
+    async getCaseDetail(id) {
+      const res = await getCaseDetail(id);
+      console.log(res)
+      this.caseDetail = res.data
+      this.dialogVisible = true
+    },
+    // 导出
+    async handleExport() {
+      const res = await exportToExcel(this.searchForm)
+      this.downloadFile(res)
+    },
+    downloadFile(data) {
+      // 文件导出
+      if (!data) {
+        return
+      }
+      let url = window.URL.createObjectURL(new Blob([data]));
+      let link = document.createElement('a');
+      link.style.display = 'none';
+      link.href = url;
+      link.setAttribute('download', '个案信息.xls');
+      document.body.appendChild(link);
+      link.click()
+    },
+    // 每页加载几条数据
+    handleSizeChange(val) {
+      this.listQuery.size = val;
+      this.handleSearch();
+    },
+    // 分页-当前页
+    handleCurrentChange(val) {
+      this.listQuery.page = val;
+      this.handleSearch();
+    },
   }
+}
 </script>
 
 
 <style lang="scss" scoped>
-  .screening-tests-index {
-    padding: 20px;
-    background-color: #fff;
-
-    .screening-tests-index-piece {
-      overflow: hidden;
-
-      .screening-tests-index-form {
-        width: 50%;
-        height: auto;
-        float: left;
-        padding: 80px 10px;
-
-        &+div.screening-tests-index-piece {
-          width: 50%;
-          height: 350px;
-          float: left;
-
-          &>#pie{
-            width: 100%;
-            height: 350px;
-          }
-        }
-      }
-
-      .screening-tests-index-list {
-        position: relative;
-
-        // 选择查询结果导出
-        .selectTableData {
-          width: 100%;
-          height: 48px;
-          line-height: 48px;
-          background-color: #F1F1F1;
-
-          ul {
-            overflow: hidden;
-
-            li {
-              float: left;
-              margin-right: 25px;
-
-              .el-checkbox {
-                padding-left: 14px;
-              }
-            }
-          }
-        }
-      }
-
-    }
-
-    .file-updata-dialog {
-
-      h3 {
-        overflow: hidden;
-      }
-
-      .product-scoring {
-        margin: 10px auto;
-        text-align: center;
-      }
+.case {
+  .case_query {
+    .case_query_from {
+      background: #fff;
+      padding: 12px 16px;
     }
   }
+  .case_table {
+    background: #fff;
+  }
+  .case_footer {
+    margin-top: 10px;
+  }
+}
+.case_add {
+  .el-form-item {
+    margin-bottom: 18px;
+  }
+  .add_margin {
+    margin: 0 10px;
+  }
+  .add_content {
+    text-decoration: underline;
+  }
+}
 </style>
 
-<style>
-  .screening-tests-index-piece .input-with-select .el-select .el-input {
-    width: 90px;
-  }
 
-  .screening-tests-index-piece .input-with-select .el-select .el-input input {
-    padding: 0px 10px;
-  }
-
-  .screening-tests-index-piece .el-date-editor .el-range-separator {
-    width: 10%;
-  }
-
-  .screening-tests-index-piece .el-date-editor--daterange.el-input__inner {
-    width: 240px;
-  }
-</style>

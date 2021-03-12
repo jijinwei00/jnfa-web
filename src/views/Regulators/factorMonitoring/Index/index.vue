@@ -1,349 +1,235 @@
 <template>
-    <div class="results-management-writings-index">
-        <div class="results-management-writings-piece results-management-writings-form">
-            <b>全部 ({{ total }})</b>
-            <el-form :inline="true" :model="searchForm" class="search-form p-r" size="mini">
-                <el-form-item>
-                    <el-input prefix-icon="el-icon-search"   placeholder="著作名称/出版社"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-input prefix-icon="el-icon-search" placeholder="发明人姓名"   class="input-with-select">
-                        <el-select   slot="append" placeholder="请选择">
-                            <el-option label="全部科室" value=""></el-option>
-                            <el-option :label="item.deptName" :value="item.deptCode" v-for="(item,index) in departmentList"
-                            :key="`literatureDeptCode${index}`"></el-option>
-                        </el-select>
-                    </el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-select   placeholder="全部角色">
-                          <el-option   
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item>
-                    <el-date-picker v-model="searchForm.publicationDate" value-format="yyyy-MM-dd" type="daterange" range-separator="至" start-placeholder="开始日期"
-                        end-placeholder="结束日期">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="handleSearch">查询</el-button>
-                    <el-button @click="handleResetSearch">重置</el-button>
-                    <el-button v-if="userInfo.userRole.indexOf('普通用户') != -1" @click="handleToAddPage">新建</el-button>
-                </el-form-item>
-            </el-form>
-        </div>
-        <div class="results-management-writings-piece">
-            <div class="results-management-writings-list">
-                <!-- 选择表格数据导出 -->
-                <div class="selectTableData" v-if="multipleSelection.length">
-                    <ul>
-                        <li>
-                            <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleToggleSelection(multipleSelection)"></el-checkbox>
-                        </li>
-                        <li>
-                            <el-select size="mini" v-model="selectTableData.type" placeholder="请选择" @change="handleSelectTableDataAll">
-                                <el-option label="全选本页数据" value="0"></el-option>
-                                <el-option label="全选所有数据" value="1"></el-option>
-                            </el-select>
-                        </li>
-                        <li>
-                            已选择 {{  selectTableData.type == '1' ? total : multipleSelection.length }} 项目
-                        </li>
-                        <li>
-                            <el-link :underline="false" type="primary" @click="handleExport">一键导出</el-link>
-                        </li>
-                        <li>
-                            <el-link :underline="false" @click="handleToggleSelection()">清空</el-link>
-                        </li>
-                    </ul>
-                </div>
-                <el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" style="width: 100%" :show-header="!multipleSelection.length"
-                    @selection-change="handleSelectionChange">
-                    <el-table-column type="selection" width="55" v-if="userInfo.userRole.indexOf('项目管理员') != -1"></el-table-column>
-                    <el-table-column type="index" label="序号" width="50"></el-table-column>
-                    <el-table-column prop="literatureName" label="软著名称" width="auto"></el-table-column>
-                    <el-table-column label="著作人" width="160">
-                        <template slot-scope="scope">
-                            <div style="text-align: center;display: inline-block;" v-for=" (item,index) in scope.row.literaturePersons"
-                                :key="`literaturePersons${index}`">
-                                <p> {{ item.srAuthorPersonName }} </p>
-                                <span style="font-size: 12px; color: #1890FF;">
-                                    {{ item.srAuthorDeptName }}
-                                </span>
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="所属角色" width="auto">
-                        <template slot-scope="scope">
-                            <div style="text-align: center;display: inline-block;" v-for=" (item,index) in scope.row.literaturePersons"
-                                :key="`literaturePersons${index}`">
-                                <p> {{ item.srAuthorRoleName }} </p>
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="publisherName" label="出版社" width="160"></el-table-column>
-                    <el-table-column prop="publicationDate" label="出版日期" width="auto"></el-table-column>
-                    <el-table-column label="状态" width="100">
-                        <template slot-scope="scope">
-                            <ListStatus :rowDataStatus="`${scope.row.status}`"></ListStatus>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="操作" width="100">
-                        <template slot-scope="scope">
-                            <el-link type="primary" :underline="false" @click="handleToDetailsPage(scope.row.literatureInfoId)">详情 /</el-link>
-                            <el-link :underline="false" v-if="userInfo.userRole.indexOf('普通用户') != -1" @click="handleLiteratureDelect(scope.row)">删除</el-link>
-                            <el-link :underline="false" v-if="userInfo.userRole.indexOf('项目管理员') != -1" @click="handleExport(scope.row,'one')">导出</el-link>
-                        </template>
-                    </el-table-column>
-                </el-table>
-
-                <!-- 分页 -->
-                <div class="pagination">
-                    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[5, 10]"
-                        :current-page.sync="pageNum" :page-size="5" layout="sizes, prev, pager, next" :total="total">
-                    </el-pagination>
-                </div>
-            </div>
-
-        </div>
+  <div class="statistcalAnalysisIndex">
+    <!-- 查询搜索项 -->
+    <div class="statistcalAnalysis_query">
+      <el-form
+        :inline="true"
+        :model="searchForm"
+        class="statistcalAnalysis_query_from p-l"
+        size="mini"
+        ref="searchForm"
+      >
+        <!-- 工作进度 -->
+        <el-form-item
+          label="工作进度"
+          prop="plan"
+        >
+          <el-select
+            v-model="searchForm.plan"
+            placeholder="请选择工作进度"
+            @change="onSelectPlan"
+          >
+            <el-option
+              label="高风险底册"
+              value="0"
+            >高风险底册</el-option>
+            <el-option
+              label="随访计划"
+              value="1"
+            >随访计划</el-option>
+            <el-option
+              label="随访任务"
+              value="2"
+            >随访任务</el-option>
+          </el-select>
+        </el-form-item>
+        <!-- 日期 -->
+        <el-form-item
+          label="日期"
+          prop="date"
+        >
+          <el-date-picker
+            v-model="searchForm.date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <!-- 医生账号 -->
+        <el-form-item
+          label="医生账号"
+          prop="doctor"
+        >
+          <el-select
+            v-model="searchForm.doctor"
+            placeholder="请选择医生账号"
+          >
+            <el-option
+              label="张医生"
+              value="0"
+            >张医生</el-option>
+            <el-option
+              label="刘医生"
+              value="1"
+            >刘医生</el-option>
+            <el-option
+              label="李医生"
+              value="2"
+            >李医生</el-option>
+          </el-select>
+        </el-form-item>
+        <!-- button -->
+        <el-form-item>
+          <el-button
+            type="primary"
+            @click="handleSearch"
+          >查询</el-button>
+          <!-- 重置 -->
+          <el-button
+            type="primary"
+            @click="resetForm('searchForm')"
+          >重置</el-button>
+          <el-button
+            type="success"
+            @click="handleExport"
+          >导出</el-button>
+        </el-form-item>
+      </el-form>
     </div>
+    <!-- table 数据展示 -->
+    <div class="statistcalAnalysis_table">
+      <el-table
+        :data="tableData"
+        style="width: 100%"
+        max-height="400"
+        ref="multipleTable"
+        tooltip-effect="dark"
+        :header-cell-style="{textAlign: 'center'}"
+        :cell-style="{ textAlign: 'center' }"
+      >
+        <template v-for="(item) in tableColumList">
+          <el-table-column
+            :key="item.key"
+            :prop="item.key"
+            :label="item.val"
+          >
+            <template v-for="(ele) in item.children">
+              <el-table-column
+                :key="ele.key"
+                :prop="ele.key"
+                :label="ele.val"
+              />
+            </template>
+          </el-table-column>
+        </template>
+
+      </el-table>
+    </div>
+    <!-- 分页底部展示 -->
+    <div class="statistcalAnalysis_footer">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[10, 20, 30]"
+        :page-size="10"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
+    </div>
+  </div>
 </template>
 
 <script>
-    import ListStatus from '@/components/ListStatus/listStatus.vue' // list 状态
+export default {
+  name: "statistcalAnalysisIndex", //工作进度
+  data() {
+    return {
+      total: 0, // 查询总数
+      pageNum: 1, // 查询分页
+      pageSize: 5, // 查询分页
+      searchForm: {
+        date: "", //日期
+        doctor: "", //医生账号
+        plan: '0',//工作进度
+      }, //查询条件
+      tableColumList: [{ key: 'index', val: '序号', children: [] }, { key: 'sum', val: '收集者总数', children: [] }, { key: 'fxdc', val: '风险底册', children: [{ key: 'zs', val: '总数' }, { key: 'wu', val: '无风险' }, { key: 'zhong', val: '中风险' }, { key: 'gao', val: '高风险' }] }, { key: 'fa', val: '已提交肺癌中心', children: [] }, { key: 'wtj', val: '未提交患者', children: [] }, { key: 'qt', val: '其他', children: [] }],//table表头
+      tableData: [
+        {
+          index: "1",
 
-    import {
-    } from "@/api/dict.js" // 字典表接口文档
-
-    import {
-    } from "@/assets/js/dict.js" // 字典表接口文档
-
-
-    import {
-        handleDownloadFileList, // post 文件下载
-    } from "@/assets/js/publicFunctions.js"
-
-    export default {
-        name: 'resultsManagementWritingsIndex',
-        components: {
-            ListStatus, // 列表状态
         },
-        data() {
-            return {
-                searchForm: {
-                    publicationDate: [],
-                },
-                total: 0, // 查询总数
-                pageNum: 1, // 查询分页
-                pageSize: 5, // 查询分页
+        {
+          index: "2",
 
-                 
-                departmentList: [], // 科室列表
-                tableData: [],
-
-                multipleSelection: [], // 选中的数据
-
-                checkAll: false, // 表格外checkbox表示是否全选  false 为不选 true 为全选
-                isIndeterminate: true, // 以表示 checkbox 的不确定状态  true 为不选 false 为全选
-                selectTableData: {
-                    type: '请选择'
-                }, // 查询结果的选择导出
-                fileUpdataVisible: false, // 文件导出
-            }
         },
-        watch: {
-            // 监听表格外全选的操作
-            multipleSelection(newData, oldData) {
-                if (newData.length < this.tableData.length && newData.length > 0) {
-                    this.isIndeterminate = true;
-                    this.checkAll = false;
-                    this.selectTableData.type = '请选择';
-                }
-                if (newData.length <= 0) {
-                    this.isIndeterminate = false;
-                    this.checkAll = false;
-                    this.selectTableData.type = '请选择';
-                }
-                if (newData.length == this.tableData.length) {
-                    this.isIndeterminate = false;
-                    this.checkAll = true;
-                }
-            }
+        {
+          index: "3",
+
         },
-        created: function() {
-            this.axiosGetDepartmentList(); // 初始化查询科室
+        {
+          index: "4",
 
-            this.handleSearch(); // 初始化查询列表
         },
-        methods: {
+        {
+          index: "5",
 
-            // 表格外 select 的操作
-            handleSelectTableDataAll(val) {
-                if (val == '0') {
-                    this.$refs.multipleTable.clearSelection();
-                    this.tableData.forEach(row => {
-                        this.$refs.multipleTable.toggleRowSelection(row);
-                    });
-                } else if (val == '1') {
-                    this.$refs.multipleTable.clearSelection();
-                    this.tableData.forEach(row => {
-                        this.$refs.multipleTable.toggleRowSelection(row);
-                    });
-                }
-            },
+        },
+        {
+          index: "6",
 
-            // 表格外的选择
-            handleToggleSelection(rows) {
-                if (rows) {
-                    rows.forEach(row => {
-                        this.$refs.multipleTable.toggleRowSelection(row);
-                    });
-                } else {
-                    this.$refs.multipleTable.clearSelection();
-                }
-            },
+        },
+      ], //table模拟数据
+      currentPage: 1,
+      total: 100,
+    };
+  },
 
-            // 表格里数据选择
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-            },
+  methods: {
+    // 工作进度select
+    onSelectPlan(val) {
+      let dataList1 = [{ key: 'index', val: '序号', children: [] }, { key: 'sum', val: '收集者总数', children: [] }, { key: 'fxdc', val: '风险底册', children: [{ key: 'zs', val: '总数' }, { key: 'wu', val: '无风险' }, { key: 'zhong', val: '中风险' }, { key: 'gao', val: '高风险' }] }, { key: 'fa', val: '已提交肺癌中心', children: [] }, { key: 'wtj', val: '未提交患者', children: [] }, { key: 'qt', val: '其他', children: [] }]//高风险底册
+      let dataList2 = [{ key: 'index', val: '序号', children: [] }, { key: 'fxlx', val: '风险类型', children: [{ key: 'wu', val: '无' }, { key: 'zhong', val: '中' }, { key: 'gao', val: '高' }] }, { key: 'zlfa', val: '治疗方案', children: [{ key: 'bs', val: '保守' }, { key: 'ss', val: '手术' }, { key: 'gc', val: '观察' }] }]//随访计划
+      let dataList3 = [{ key: 'index', val: '序号', children: [] }, { key: 'fxlx', val: '风险类型', children: [{ key: 'wu', val: '无' }, { key: 'zhong', val: '中' }, { key: 'gao', val: '高' }] }, { key: 'zlfa', val: '治疗方案', children: [{ key: 'bs', val: '保守' }, { key: 'ss', val: '手术' }, { key: 'gc', val: '观察' }] }, { key: 'sfzt', val: '随访状态', children: [{ key: 'sf', val: '已随访' }, { key: 'tf', val: '脱访' }, { key: 'sf', val: '失访' }] }]//随访任务
+      if (val == '0') { this.tableColumList = dataList1 }
+      if (val == '1') { this.tableColumList = dataList2 }
+      if (val == '2') { this.tableColumList = dataList3 }
+    },
+    //   查询
+    handleSearch() {
+      console.log("查询--->>>>", this.searchForm);
+      alert("查询");
+    },
+    // 重置
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    // 导出
+    handleExport() {
+      alert("导出");
+    },
 
-            // 一键导出
-            handleExport(item,type) {
-                let postData = {
-                    infoIds: [],
-                };
-
-                if(type == 'one'){ // 表格内的单个导出
-                    postData.infoIds.push(item.literatureInfoId)
-                } else if (this.selectTableData.type != '1') {
-                    this.multipleSelection.map((i) => {
-                        postData.infoIds.push(i.literatureInfoId)
-                    })
-                }
-            },
-
-            // 表单重置
-            handleResetSearch() {
-                this.searchForm = {
-                    publicationDate:[],
-                };
-                this.handleSearch(); // 初始化查询列表
-            },
-
-            // 著作新建
-            handleToAddPage() {
-
-            },
-
-            // 著作详情
-            handleToDetailsPage(writingsId) {
-
-            },
-
-            // 表单查询
-            handleSearch() {
-                console.log('submit!');
-                let {
-                    searchForm,
-                    pageNum,
-                    pageSize
-                } = this, postData = {};
-
-                if (!Array.isArray(searchForm.publicationDate)) {
-                    searchForm.publicationDate = []
-                }
-
-                postData = searchForm;
-
-                console.log('postData ---->>>', postData)
-
-            },
-
-            // 分页
-            handleSizeChange(val) {
-                this.pageSize = val;
-                this.handleSearch()
-            },
-
-            // 分页
-            handleCurrentChange(val) {
-                this.handleSearch(val);
-            },
-        }
-    }
+    // 每页加载几条数据
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    // 分页-当前页
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+    },
+  },
+};
 </script>
 
 
 <style lang="scss" scoped>
-    .results-management-writings-index {
-        padding: 20px;
-        background-color: #fff;
-
-        .results-management-writings-piece {
-
-            &.results-management-writings-form {
-                height: auto;
-                line-height: auto;
-                overflow: hidden;
-            }
-
-            .results-management-writings-list {
-                position: relative;
-
-                // 选择查询结果导出
-                .selectTableData {
-                    width: 100%;
-                    height: 48px;
-                    line-height: 48px;
-                    background-color: #F1F1F1;
-
-                    ul {
-                        overflow: hidden;
-
-                        li {
-                            float: left;
-                            margin-right: 25px;
-
-                            .el-checkbox {
-                                padding-left: 14px;
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-
-        .file-updata-dialog {
-
-            h3 {
-                overflow: hidden;
-            }
-
-            .product-scoring {
-                margin: 10px auto;
-                text-align: center;
-            }
-        }
+.statistcalAnalysisIndex {
+  .statistcalAnalysis_query {
+    .statistcalAnalysis_query_from {
+      background: #fff;
+      padding: 12px 16px;
     }
+  }
+  .statistcalAnalysis_table {
+    background: #fff;
+  }
+  .statistcalAnalysis_footer {
+    margin-top: 10px;
+  }
+}
 </style>
 
-<style>
-    .results-management-writings-piece .input-with-select .el-select .el-input {
-        width: 90px;
-    }
 
-    .results-management-writings-piece .input-with-select .el-select .el-input input {
-        padding: 0px 10px;
-    }
-
-    .results-management-writings-piece .el-date-editor .el-range-separator{
-        width: 10%;
-    }
-
-    .results-management-writings-piece .el-date-editor--daterange.el-input__inner{
-        width: 240px;
-    }
-</style>

@@ -141,15 +141,15 @@ export default new Router({
                     pageLevel: 1
                 },
             },
-              {
+            {
                 path: '/familyDoctor/acountManagement/index',
                 component: () => import('@/views/Screening/acountManagement/Index/index'),
                 name: 'acountManagement',
                 meta: {
-                  title: '账号管理',
-                  pageLevel: 1
+                    title: '账号管理',
+                    pageLevel: 1
                 }
-              }]
+            }]
         },
         {
             path: '/regulators',
@@ -186,7 +186,7 @@ export default new Router({
                 component: () => import('@/views/Regulators/diseaseSurveillance/Index/index'),
                 name: 'diseaseSurveillance',
                 meta: {
-                    title: '肺癌高危人群发病监测',
+                    title: '随访任务',
                     pageLevel: 1
                 },
             }, {
@@ -194,7 +194,7 @@ export default new Router({
                 component: () => import('@/views/Regulators/factorMonitoring/Index/index'),
                 name: 'factorMonitoring',
                 meta: {
-                    title: '肺癌因素监测',
+                    title: '工作进度',
                     pageLevel: 1
                 },
             }, {
@@ -238,15 +238,15 @@ export default new Router({
                     pageLevel: 1
                 },
             },
-              {
+            {
                 path: '/regulators/acountManagement/index',
                 component: () => import('@/views/Screening/acountManagement/Index/index'),
                 name: 'acountManagement',
                 meta: {
-                  title: '账号管理',
-                  pageLevel: 1
+                    title: '账号管理',
+                    pageLevel: 1
                 },
-              }
+            }
             ]
         },
         {
