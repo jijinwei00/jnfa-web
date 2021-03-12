@@ -9,119 +9,77 @@
         size="mini"
         ref="searchForm"
       >
-        <!-- 姓名 -->
-        <el-form-item label="姓名">
-          <el-input
-            prefix-icon="el-icon-search"
-            placeholder="姓名"
-            v-model="searchForm.subjectName"
-          />
-        </el-form-item>
-        <!-- 年龄 -->
-        <el-form-item label="年龄">
-          <el-input
-            prefix-icon="el-icon-search"
-            placeholder="年龄min"
-            v-model="searchForm.minAge"
-          />
-        </el-form-item>
-        <el-form-item>
-          -
-        </el-form-item>
-        <el-form-item>
-          <el-input
-            prefix-icon="el-icon-search"
-            placeholder="年龄max"
-            v-model="searchForm.maxAge"
-          />
-        </el-form-item>
-        <!-- 吸烟 -->
-        <el-form-item label="吸烟">
+        <!-- 风险等级 -->
+        <el-form-item
+          label="风险等级"
+          prop="level"
+        >
           <el-select
-            v-model="searchForm.smoke"
-            placeholder="是否吸烟"
+            v-model="searchForm.level"
+            placeholder="请选择风险等级"
           >
             <el-option
-              label="是"
-              value="1"
-            ></el-option>
+              label="无风险"
+              value="0"
+            >无风险</el-option>
             <el-option
-              label="否"
+              label="中风险"
+              value="1"
+            >中风险</el-option>
+            <el-option
+              label="高风险"
               value="2"
-            ></el-option>
+            >高风险</el-option>
           </el-select>
         </el-form-item>
-        <!-- 被动吸烟 -->
-        <el-form-item label="被动吸烟">
+        <!-- 癌筛查标准 -->
+        <el-form-item
+          label="癌筛查标准"
+          prop="conditions"
+        >
           <el-select
-            v-model="searchForm.smoke1"
-            placeholder="被动吸烟"
+            v-model="searchForm.conditions"
+            placeholder="请选择癌筛查标准"
           >
             <el-option
-              label="是"
+              label="吸烟包年数不少于10年（包年），包括曾经不少于10年（包年)，但戒烟不足1年"
+              value="0"
+            >吸烟包年数不少于10年（包年），包括曾经不少于10年（包年)，但戒烟不足1年</el-option>
+            <el-option
+              label="与公共生活或同事工作被动吸烟超过20年"
               value="1"
-            ></el-option>
+            >与公共生活或同事工作被动吸烟超过20年</el-option>
             <el-option
-              label="否"
+              label="患有慢性肺疾病"
               value="2"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <!-- 职业暴露史 -->
-        <el-form-item label="职业暴露史">
-          <el-select
-            v-model="searchForm.smoke2"
-            placeholder="是否有职业暴露史"
-          >
+            >患有慢性肺疾病</el-option>
             <el-option
-              label="是"
-              value="1"
-            ></el-option>
+              label="有职业暴露史不少于1年，包括暴露干石棉、氨铋銘硅和烟灰"
+              value="3"
+            >有职业暴露史不少于1年，包括暴露干石棉、氨铋銘硅和烟灰</el-option>
             <el-option
-              label="否"
-              value="2"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <!-- 恶性肿瘤病史 -->
-        <el-form-item label="恶性肿瘤病史">
-          <el-select
-            v-model="searchForm.smoke3"
-            placeholder="是否有恶性肿瘤病史"
-          >
+              label="有亲属确诊肺癌"
+              value="4"
+            >有亲属确诊肺癌</el-option>
             <el-option
-              label="是"
-              value="1"
-            ></el-option>
-            <el-option
-              label="否"
-              value="2"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <!-- 管理机构 -->
-        <el-form-item label="管理机构">
-          <el-select
-            v-model="searchForm.sex"
-            placeholder="请选择管理机构"
-          >
-            <el-option
-              label="管理机构A"
-              value="1"
-            ></el-option>
-            <el-option
-              label="管理机构B"
-              value="2"
-            ></el-option>
+              label="其他条件"
+              value="5"
+            >其他条件</el-option>
           </el-select>
         </el-form-item>
 
         <!-- button -->
         <el-form-item>
+          <!-- 查询 -->
           <el-button
             type="primary"
             @click="handleSearch"
           >查询</el-button>
+          <!-- 重置 -->
+          <el-button
+            type="primary"
+            @click="resetForm('searchForm')"
+          >重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -155,34 +113,19 @@
           width="150"
         />
         <el-table-column
-          prop="content"
+          prop="idcard"
           label="身份证"
           width="300"
         />
         <el-table-column
-          prop="professional"
-          label="职业"
+          prop="level"
+          label="风险等级"
           width="150"
         />
         <el-table-column
-          prop="gljg"
-          label="管理机构"
-          width="300"
+          prop="content"
+          label="内容"
         />
-        <el-table-column
-          fixed="right"
-          label="操作"
-        >
-          <template slot-scope="scope">
-            <el-button
-              @click.native.prevent="handleDetails(scope.$index, tableData)"
-              type="text"
-              size="small"
-            >
-              详情
-            </el-button>
-          </template>
-        </el-table-column>
       </el-table>
     </div>
     <!-- 分页底部展示 -->
@@ -284,70 +227,75 @@
 
 <script>
 export default {
-  name: 'highDataQueryIndex',//任务管理
+  name: 'highDataQueryIndex',//高风险底册级别设置
   data() {
     return {
       total: 0, // 查询总数
       pageNum: 1, // 查询分页
       pageSize: 5, // 查询分页
       searchForm: {
-        subjectName: '',//姓名
-        smoke: '',//是否吸烟
-        sex: '',//管理机构
-        minAge: '',//最小年龄年龄
-        maxAge: '',//最大年龄
-        smoke1: '',//被动吸烟
-        smoke2: '',//职业暴露史
-        smoke3: '',//恶性肿瘤病史
+        level: '',//等级
+        conditions: '',//筛选条件
       },//查询条件
       tableData: [{
         key: '1',
         sex: '男',
         subjectName: '课题1',
         phone: '18845147789',
-        content: '231098199501261615',
         professional: '个人',
-        gljg: '全球宇宙无敌卫健委中心',
+        content: '全球宇宙无敌卫健委中心',
+        idcard: '231098199501261615',
+        level: '高风险'
       }, {
         key: '2',
         sex: '男',
         subjectName: '课题2',
         phone: '18845147789',
-        content: '231098199501261615',
+        content: '全球宇宙无敌卫健委中心',
+        idcard: '231098199501261615',
         professional: '个人',
         gljg: '全球宇宙无敌卫健委中心',
+        level: '高风险'
       }, {
         key: '3',
         sex: '男',
         subjectName: '课题3',
         phone: '18845147789',
-        content: '231098199501261615',
+        content: '全球宇宙无敌卫健委中心',
+        idcard: '231098199501261615',
         professional: '个人',
         gljg: '全球宇宙无敌卫健委中心',
+        level: '高风险'
       }, {
         key: '4',
         sex: '男',
         subjectName: '课题4',
         phone: '18845147789',
-        content: '231098199501261615',
+        content: '全球宇宙无敌卫健委中心',
+        idcard: '231098199501261615',
         professional: '个人',
         gljg: '全球宇宙无敌卫健委中心',
+        level: '高风险'
       }, {
         key: '5',
         sex: '男',
         subjectName: '课题5',
         phone: '18845147789',
-        content: '231098199501261615',
+        content: '全球宇宙无敌卫健委中心',
+        idcard: '231098199501261615',
         professional: '个人',
         gljg: '全球宇宙无敌卫健委中心',
+        level: '高风险'
       }, {
         key: '6',
         sex: '男',
         subjectName: '课题6',
         phone: '18845147789',
-        content: '231098199501261615',
+        content: '全球宇宙无敌卫健委中心',
+        idcard: '231098199501261615',
         professional: '个人',
         gljg: '全球宇宙无敌卫健委中心',
+        level: '高风险'
       }],//table模拟数据
       currentPage: 1,
       total: 100,
@@ -380,7 +328,10 @@ export default {
       console.log('查询--->>>>', this.searchForm);
       alert('查询')
     },
-
+    // 重置
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
     // 每页加载几条数据
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);

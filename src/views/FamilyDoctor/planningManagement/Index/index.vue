@@ -9,119 +9,87 @@
         size="mini"
         ref="searchForm"
       >
-        <!-- 姓名 -->
-        <el-form-item label="姓名">
+        <!-- 患者姓名 -->
+        <el-form-item
+          label="患者姓名"
+          prop="subjectName"
+        >
           <el-input
             prefix-icon="el-icon-search"
-            placeholder="姓名"
+            placeholder="患者姓名"
             v-model="searchForm.subjectName"
           />
         </el-form-item>
-        <!-- 年龄 -->
-        <el-form-item label="年龄">
+        <!-- 医生姓名 -->
+        <el-form-item
+          label="医生姓名"
+          prop="doctor"
+        >
           <el-input
             prefix-icon="el-icon-search"
-            placeholder="年龄min"
-            v-model="searchForm.minAge"
+            placeholder="医生姓名"
+            v-model="searchForm.doctor"
           />
         </el-form-item>
-        <el-form-item>
-          -
-        </el-form-item>
-        <el-form-item>
-          <el-input
-            prefix-icon="el-icon-search"
-            placeholder="年龄max"
-            v-model="searchForm.maxAge"
-          />
-        </el-form-item>
-        <!-- 吸烟 -->
-        <el-form-item label="吸烟">
+        <!-- 风险等级 -->
+        <el-form-item
+          label="风险等级"
+          prop="level"
+        >
           <el-select
-            v-model="searchForm.smoke"
-            placeholder="是否吸烟"
+            v-model="searchForm.level"
+            placeholder="请选择风险等级"
           >
             <el-option
-              label="是"
-              value="1"
-            ></el-option>
+              label="无风险"
+              value="0"
+            >无风险</el-option>
             <el-option
-              label="否"
+              label="中风险"
+              value="1"
+            >中风险</el-option>
+            <el-option
+              label="高风险"
               value="2"
-            ></el-option>
+            >高风险</el-option>
           </el-select>
         </el-form-item>
-        <!-- 被动吸烟 -->
-        <el-form-item label="被动吸烟">
+        <!-- 治疗方案 -->
+        <el-form-item
+          label="治疗方案"
+          prop="case"
+        >
           <el-select
-            v-model="searchForm.smoke1"
-            placeholder="被动吸烟"
+            v-model="searchForm.case"
+            placeholder="请选择治疗方案"
           >
             <el-option
-              label="是"
+              label="保守治疗"
+              value="0"
+            >保守治疗</el-option>
+            <el-option
+              label="手术治疗"
               value="1"
-            ></el-option>
+            >手术治疗</el-option>
             <el-option
-              label="否"
+              label="观察治疗"
               value="2"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <!-- 职业暴露史 -->
-        <el-form-item label="职业暴露史">
-          <el-select
-            v-model="searchForm.smoke2"
-            placeholder="是否有职业暴露史"
-          >
-            <el-option
-              label="是"
-              value="1"
-            ></el-option>
-            <el-option
-              label="否"
-              value="2"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <!-- 恶性肿瘤病史 -->
-        <el-form-item label="恶性肿瘤病史">
-          <el-select
-            v-model="searchForm.smoke3"
-            placeholder="是否有恶性肿瘤病史"
-          >
-            <el-option
-              label="是"
-              value="1"
-            ></el-option>
-            <el-option
-              label="否"
-              value="2"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <!-- 管理机构 -->
-        <el-form-item label="管理机构">
-          <el-select
-            v-model="searchForm.sex"
-            placeholder="请选择管理机构"
-          >
-            <el-option
-              label="管理机构A"
-              value="1"
-            ></el-option>
-            <el-option
-              label="管理机构B"
-              value="2"
-            ></el-option>
+            >观察治疗</el-option>
           </el-select>
         </el-form-item>
 
         <!-- button -->
         <el-form-item>
+          <!-- 查询 -->
           <el-button
             type="primary"
             @click="handleSearch"
           >查询</el-button>
+          <!-- 重置 -->
+          <el-button
+            type="primary"
+            @click="resetForm('searchForm')"
+          >重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -141,7 +109,7 @@
 
         <el-table-column
           prop="subjectName"
-          label="姓名"
+          label="患者姓名"
           width="200"
         />
         <el-table-column
@@ -150,24 +118,24 @@
           width="100"
         />
         <el-table-column
-          prop="phone"
-          label="联系方式"
-          width="150"
-        />
-        <el-table-column
           prop="content"
           label="身份证"
           width="300"
         />
         <el-table-column
-          prop="professional"
-          label="职业"
+          prop="level"
+          label="风险等级"
           width="150"
         />
         <el-table-column
-          prop="gljg"
-          label="管理机构"
-          width="300"
+          prop="doctor"
+          label="医生姓名"
+          width="200"
+        />
+        <el-table-column
+          prop="case"
+          label="治疗方案"
+          width="200"
         />
         <el-table-column
           fixed="right"
@@ -200,7 +168,7 @@
     </div>
     <!-- 详情Modal -->
     <el-dialog
-      title="制定随访计划"
+      title="制定计划"
       :visible.sync="developVisible"
     >
       <el-form
@@ -212,42 +180,34 @@
       >
         <el-row>
           <el-col :span="24">
-            <el-form-item
-              label="名称："
-              prop="name"
-            >
-              <el-input v-model="detailsForm.name"></el-input>
-            </el-form-item>
+            <div>
+              <span style="margin: 0 20px 20px 0;">姓名：</span><span>{{detailsForm.subjectName}}</span>
+            </div>
           </el-col>
         </el-row>
         <el-row>
+          <!-- 治疗方案 -->
           <el-form-item
-            label="执行时间："
-            required
+            label="治疗方案"
+            prop="case"
           >
-            <el-col :span="11">
-              <el-form-item prop="date1">
-                <el-date-picker
-                  type="date"
-                  placeholder="选择日期"
-                  v-model="detailsForm.date1"
-                  style="width: 100%;"
-                ></el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col
-              class="line"
-              :span="2"
-            >-</el-col>
-            <el-col :span="11">
-              <el-form-item prop="date2">
-                <el-time-picker
-                  placeholder="选择时间"
-                  v-model="detailsForm.date2"
-                  style="width: 100%;"
-                ></el-time-picker>
-              </el-form-item>
-            </el-col>
+            <el-select
+              v-model="detailsForm.case"
+              placeholder="请选择治疗方案"
+            >
+              <el-option
+                label="保守治疗"
+                value="0"
+              >保守治疗</el-option>
+              <el-option
+                label="手术治疗"
+                value="1"
+              >手术治疗</el-option>
+              <el-option
+                label="观察治疗"
+                value="2"
+              >观察治疗</el-option>
+            </el-select>
           </el-form-item>
         </el-row>
       </el-form>
@@ -271,7 +231,7 @@
 
 <script>
 export default {
-  name: 'planningManagementIndex',//任务管理
+  name: 'planningManagementIndex',//制定随访计划
   data() {
     return {
       total: 0, // 查询总数
@@ -279,81 +239,75 @@ export default {
       pageSize: 5, // 查询分页
       searchForm: {
         subjectName: '',//姓名
-        smoke: '',//是否吸烟
-        sex: '',//管理机构
-        minAge: '',//最小年龄年龄
-        maxAge: '',//最大年龄
-        smoke1: '',//被动吸烟
-        smoke2: '',//职业暴露史
-        smoke3: '',//恶性肿瘤病史
+        level: '',//分险等级
+        case: '',//治疗方案
+        doctor: '',//医生姓名
       },//查询条件
       tableData: [{
         key: '1',
         sex: '男',
         subjectName: '课题1',
-        phone: '18845147789',
         content: '231098199501261615',
-        professional: '个人',
-        gljg: '全球宇宙无敌卫健委中心',
+        level: '中风险',
+        case: '观察治疗',
+        doctor: '李四'
       }, {
         key: '2',
         sex: '男',
         subjectName: '课题2',
         phone: '18845147789',
         content: '231098199501261615',
-        professional: '个人',
-        gljg: '全球宇宙无敌卫健委中心',
+        level: '中风险',
+        case: '观察治疗',
+        doctor: '李四'
       }, {
         key: '3',
         sex: '男',
         subjectName: '课题3',
         phone: '18845147789',
         content: '231098199501261615',
-        professional: '个人',
-        gljg: '全球宇宙无敌卫健委中心',
+        level: '中风险',
+        case: '观察治疗',
+        doctor: '李四'
       }, {
         key: '4',
         sex: '男',
         subjectName: '课题4',
         phone: '18845147789',
         content: '231098199501261615',
-        professional: '个人',
-        gljg: '全球宇宙无敌卫健委中心',
+        level: '中风险',
+        case: '观察治疗',
+        doctor: '李四'
       }, {
         key: '5',
         sex: '男',
         subjectName: '课题5',
         phone: '18845147789',
         content: '231098199501261615',
-        professional: '个人',
-        gljg: '全球宇宙无敌卫健委中心',
+        level: '中风险',
+        case: '观察治疗',
+        doctor: '李四'
       }, {
         key: '6',
         sex: '男',
         subjectName: '课题6',
         phone: '18845147789',
         content: '231098199501261615',
-        professional: '个人',
-        gljg: '全球宇宙无敌卫健委中心',
+        level: '中风险',
+        case: '观察治疗',
+        doctor: '李四'
       }],//table模拟数据
       currentPage: 1,
       total: 100,
       developVisible: false,//制定Modal显示隐藏
       detailsForm: {
-        name: '',//随访名称
-        date1: '',//随访日期
-        date2: '',//随访时间
+        subjectName: '',//随访名称
+        case: '',//治疗方案
       },//详情form表单数据
       ruleForm: {
-        name: [
-          { required: true, message: '请输入随访名称', trigger: 'blur' },
-        ],
-        date1: [
-          { type: 'date', required: true, message: '请输入随访执行日期', trigger: 'blur' }
-        ],
-        date2: [
-          { type: 'date', required: true, message: '请输入随访执行时间', trigger: 'blur' }
-        ],
+        case: [
+          { required: true, message: '请选择治疗方案', trigger: 'blur' }
+        ]
       },
     }
   },
@@ -364,7 +318,10 @@ export default {
       console.log('查询--->>>>', this.searchForm);
       alert('查询')
     },
-
+    // 重置
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
     // 每页加载几条数据
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -375,8 +332,10 @@ export default {
     },
     // 制定随访计划
     handleDevelop(index, record) {
+      let data = record[index]
+      this.detailsForm = data
       this.developVisible = true
-      console.log('制定随访计划---->>>>>', record);
+      console.log('制定随访计划---->>>>>', record[index]);
     },
     //制定随访计划 确定
     detailsOK(formName) {

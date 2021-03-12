@@ -97,7 +97,7 @@ export default new Router({
         },
         {
             path: '/familyDoctor',
-            name: '家庭医生',
+            name: '肺癌筛查治疗中心',
             component: Home,
             redirect: '/highDataQuery/index',
             children: [{
@@ -105,7 +105,7 @@ export default new Router({
                 component: () => import('@/views/FamilyDoctor/highDataQuery/Index/index'),
                 name: 'highDataQuery',
                 meta: {
-                    title: '高危人群数据查询',
+                    title: '高风险底册级别设置',
                     pageLevel: 1
                 },
             }, {
@@ -113,7 +113,7 @@ export default new Router({
                 component: () => import('@/views/FamilyDoctor/planningManagement/Index/index'),
                 name: 'planningManagement',
                 meta: {
-                    title: '制定随访计划管理',
+                    title: '制定随访计划',
                     pageLevel: 1
                 },
             }, {
@@ -121,7 +121,7 @@ export default new Router({
                 component: () => import('@/views/FamilyDoctor/processTracking/Index/index'),
                 name: 'processTracking',
                 meta: {
-                    title: '随访过程跟踪',
+                    title: '数据查询',
                     pageLevel: 1
                 },
             }, {
@@ -129,7 +129,7 @@ export default new Router({
                 component: () => import('@/views/FamilyDoctor/planReminder/Index/index'),
                 name: 'planReminder',
                 meta: {
-                    title: '随访计划提醒',
+                    title: '知情同意书打印',
                     pageLevel: 1
                 },
             }, {
@@ -137,7 +137,7 @@ export default new Router({
                 component: () => import('@/views/FamilyDoctor/executiveStatistics/Index/index'),
                 name: 'executiveStatistics',
                 meta: {
-                    title: '随访执行统计',
+                    title: '统计分析',
                     pageLevel: 1
                 },
             }]
@@ -152,7 +152,7 @@ export default new Router({
                 component: () => import('@/views/Regulators/screeningTests/Index/index'),
                 name: 'screeningTests',
                 meta: {
-                    title: '监测肺癌筛查中心',
+                    title: '个案信息',
                     pageLevel: 1
                 },
             }, {
@@ -160,7 +160,7 @@ export default new Router({
                 component: () => import('@/views/Regulators/monitoringFamilyDoctors/Index/index'),
                 name: 'monitoringFamilyDoctors',
                 meta: {
-                    title: '监测家庭医生',
+                    title: '高风险底册',
                     pageLevel: 1
                 },
             }, {
@@ -168,7 +168,7 @@ export default new Router({
                 component: () => import('@/views/Regulators/crossMonitoring/Index/index'),
                 name: 'crossMonitoring',
                 meta: {
-                    title: '交叉监测表',
+                    title: '随访计划',
                     pageLevel: 1
                 },
             },

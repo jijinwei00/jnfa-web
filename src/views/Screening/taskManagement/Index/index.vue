@@ -20,14 +20,14 @@
             v-model="searchForm.name"
           />
         </el-form-item>
-        <!-- 身份证 -->
+        <!-- 证件号码 -->
         <el-form-item
-          label="身份证号码"
+          label="证件号码"
           prop="idCard"
         >
           <el-input
             prefix-icon="el-icon-search"
-            placeholder="身份证号码"
+            placeholder="证件号码"
             v-model="searchForm.idCard"
           />
         </el-form-item>
@@ -122,6 +122,7 @@
             type="primary"
             @click="resetForm('searchForm')"
           >重置</el-button>
+          <!-- 提交 -->
           <el-button
             type="success"
             @click="submit"
@@ -287,9 +288,9 @@ export default {
       console.log('查询--->>>>', this.searchForm);
       alert('查询')
     },
-    // 自定义指标
+    // 提交
     submit() {
-      alert('新建任务')
+      alert('提交')
     },
 
     // 每页加载几条数据
