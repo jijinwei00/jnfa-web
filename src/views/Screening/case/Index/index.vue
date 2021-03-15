@@ -304,6 +304,7 @@
 </template>
 <script>
   import {pageList,getCaseDetail,exportToExcel} from '@/api/case'
+  import {downloadFile} from '@/utils/utils'
 
   export default {
     name: 'caseIndex',//个案信息
@@ -322,7 +323,6 @@
           size: 10
         },
         caseList: [],
-        total: 0,
         dialogVisible: false,//添加Modal显示隐藏
         caseDetail:{
           name:"",
@@ -373,20 +373,7 @@
       // 导出
       async handleExport() {
         const res =  await exportToExcel(this.searchForm)
-        this.downloadFile(res)
-      },
-      downloadFile(data) {
-        // 文件导出
-        if (!data) {
-          return
-        }
-        let url = window.URL.createObjectURL(new Blob([data]));
-        let link = document.createElement('a');
-        link.style.display = 'none';
-        link.href = url;
-        link.setAttribute('download', '个案信息.xls');
-        document.body.appendChild(link);
-        link.click()
+        downloadFile(res,"个案信息.xlsx")
       },
       // 每页加载几条数据
       handleSizeChange(val) {

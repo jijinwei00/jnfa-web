@@ -19,3 +19,21 @@ export function deepClone(source) {
   })
   return targetObj
 }
+
+/**
+ * 导出文件
+ * @param data
+ */
+export function downloadFile(data,fileName) {
+  // 文件导出
+  if (!data) {
+    return
+  }
+  let url = window.URL.createObjectURL(new Blob([data]));
+  let link = document.createElement('a');
+  link.style.display = 'none';
+  link.href = url;
+  link.setAttribute('download', fileName);
+  document.body.appendChild(link);
+  link.click()
+}

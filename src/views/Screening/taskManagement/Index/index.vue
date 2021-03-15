@@ -23,12 +23,12 @@
         <!-- 身份证 -->
         <el-form-item
           label="身份证号码"
-          prop="idCard"
+          prop="idNo"
         >
           <el-input
             prefix-icon="el-icon-search"
             placeholder="身份证号码"
-            v-model="searchForm.idCard"
+            v-model="searchForm.idNo"
           />
         </el-form-item>
         <!-- 时间 -->
@@ -51,30 +51,30 @@
           prop="level"
         >
           <el-select
-            v-model="searchForm.level"
+            v-model="searchForm.riskLevel"
             placeholder="请选择风险等级"
           >
             <el-option
               label="无风险"
-              value="0"
+              value="none"
             >无风险</el-option>
             <el-option
               label="中风险"
-              value="1"
+              value="medium"
             >中风险</el-option>
             <el-option
               label="高风险"
-              value="2"
+              value="high"
             >高风险</el-option>
           </el-select>
         </el-form-item>
         <!-- 电话预约情况 -->
         <el-form-item
           label="电话预约情况"
-          prop="appointment"
+          prop="appointFlag"
         >
           <el-select
-            v-model="searchForm.appointment"
+            v-model="searchForm.appointFlag"
             placeholder="请选择电话预约情况"
           >
             <el-option
@@ -90,23 +90,23 @@
         <!-- 预约结果 -->
         <el-form-item
           label="预约结果"
-          prop="appointmentRusult"
+          prop="appointResult"
         >
           <el-select
-            v-model="searchForm.appointmentRusult"
+            v-model="searchForm.appointResult"
             placeholder="请选择预约结果"
           >
             <el-option
               label="成功"
-              value="0"
+              value="success"
             >成功</el-option>
             <el-option
               label="等待"
-              value="1"
+              value="waiting"
             >等待</el-option>
             <el-option
               label="拒绝"
-              value="2"
+              value="refuse"
             >拒绝</el-option>
           </el-select>
         </el-form-item>
@@ -124,15 +124,15 @@
           >重置</el-button>
           <el-button
             type="success"
-            @click="submit"
-          >提交</el-button>
+            @click="handleExport"
+          >导出</el-button>
         </el-form-item>
       </el-form>
     </div>
     <!-- table 数据展示 -->
     <div class="taskManagementIndex_table">
       <el-table
-        :data="tableData"
+        :data="caseList"
         style="width: 100%"
         max-height="400"
         @selection-change="handleSelectionChange"
@@ -142,10 +142,9 @@
           width="55"
         />
         <el-table-column
-          fixed
-          prop="key"
+          type="index"
           label="序号"
-          width="150"
+          fixed
         />
         <el-table-column
           prop="name"
@@ -156,24 +155,24 @@
           label="性别"
         />
         <el-table-column
-          prop="level"
+          prop="riskLevel"
           label="风险等级"
         />
 
         <el-table-column
-          prop="idCardType"
+          prop="cardType"
           label="证件类型"
         />
         <el-table-column
-          prop="idCard"
+          prop="idNo"
           label="证件号码"
         />
         <el-table-column
-          prop="appointment"
+          prop="appointFlag"
           label="电话预约情况"
         />
         <el-table-column
-          prop="appointmentRusult"
+          prop="appointResult"
           label="预约结果"
         />
       </el-table>
@@ -183,9 +182,9 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
+        :current-page="listQuery.page"
         :page-sizes="[10,20,30]"
-        :page-size="10"
+        :page-size="listQuery.size"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       >
@@ -196,109 +195,66 @@
 </template>
 
 <script>
-export default {
-  name: 'taskManagementIndex',//任务管理
-  data() {
-    return {
-      total: 0, // 查询总数
-      pageNum: 1, // 查询分页
-      pageSize: 5, // 查询分页
-      searchForm: {
-        date: '',//时间
-        level: '',//等级
-        name: '',//姓名
-        idCard: '',//身份证号码
-        appointment: '',//电话预约情况
-        appointmentRusult: '',//电话预约结果
-      },//查询条件
-      tableData: [{
-        key: '1',
-        level: '高风险',
-        name: '张三',
-        sex: '男',
-        idCardType: '居民身份证',
-        idCard: '231086199602129151',
-        appointment: '是',
-        appointmentRusult: '成功',
-      }, {
-        key: '2',
-        level: '高风险',
-        name: '张三',
-        sex: '男',
-        idCardType: '居民身份证',
-        idCard: '231086199602129151',
-        appointment: '是',
-        appointmentRusult: '成功',
-      }, {
-        key: '3',
-        level: '高风险',
-        name: '张三',
-        sex: '男',
-        idCardType: '居民身份证',
-        idCard: '231086199602129151',
-        appointment: '是',
-        appointmentRusult: '等待',
-      }, {
-        key: '4',
-        level: '高风险',
-        name: '张三',
-        sex: '男',
-        idCardType: '居民身份证',
-        idCard: '231086199602129151',
-        appointment: '是',
-        appointmentRusult: '等待',
-      }, {
-        key: '5',
-        level: '高风险',
-        name: '张三',
-        sex: '男',
-        idCardType: '居民身份证',
-        idCard: '231086199602129151',
-        appointment: '是',
-        appointmentRusult: '拒绝',
-      }, {
-        key: '6',
-        level: '高风险',
-        name: '张三',
-        sex: '男',
-        idCardType: '居民身份证',
-        idCard: '231086199602129151',
-        appointment: '是',
-        appointmentRusult: '等待',
-      }],//table模拟数据
-      currentPage: 1,
-      total: 100,
-      addVisible: false,//添加Modal显示隐藏
-    }
-  },
-  methods: {
-    // 重置
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+  import {pageList,exportToExcel} from '@/api/highRisk'
+  import {downloadFile} from '@/utils/utils'
+
+  export default {
+    name: 'taskManagementIndex',//任务管理
+    data() {
+      return {
+        total: 0, // 查询总数
+        listQuery: {
+          page: 1,
+          size: 10
+        },
+        searchForm: {
+          name: '',//姓名
+          idNo: '',//身份证号码
+          date: [],//日期
+          riskLevel: null,//风险等级
+          appointFlag: null,//电话预约情况
+          appointResult: '',//电话预约结果
+        },//查询条件
+        caseList: [],//表格数据
+        addVisible: false,//添加Modal显示隐藏
+      }
     },
-    //Table复选框选择
-    handleSelectionChange(val) {
-      console.log("table复选框选择----->>>>", val);
+    created: function () {
+      this.handleSearch()
     },
-    //   查询
-    handleSearch() {
-      console.log('查询--->>>>', this.searchForm);
-      alert('查询')
-    },
-    // 自定义指标
-    submit() {
-      alert('新建任务')
-    },
-    // 每页加载几条数据
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    // 分页-当前页
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+    methods: {
+      // 重置
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      },
+      //Table复选框选择
+      handleSelectionChange(val) {
+        console.log("table复选框选择----->>>>", val);
+      },
+      //   查询
+      async handleSearch() {
+        Object.assign(this.listQuery, this.searchForm)
+        const res = await pageList(this.listQuery)
+        this.caseList = res.data.list
+        this.total = res.data.total
+      },
+      // 自定义指标
+      async handleExport() {
+        const res =  await exportToExcel(this.searchForm)
+        downloadFile(res,"高风险底册.xlsx")
+      },
+      // 每页加载几条数据
+      handleSizeChange(val) {
+        this.listQuery.size = val;
+        this.handleSearch();
+      },
+      // 分页-当前页
+      handleCurrentChange(val) {
+        this.listQuery.page = val;
+        this.handleSearch();
+      },
     }
   }
-}
 </script>
 
 
