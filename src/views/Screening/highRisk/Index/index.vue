@@ -38,7 +38,8 @@
         >
           <el-date-picker
             v-model="searchForm.date"
-            type="datetimerange"
+            value-format="yyyy-MM-dd"
+            type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -195,11 +196,10 @@
 </template>
 
 <script>
-  import {pageList,exportToExcel} from '@/api/highRisk'
-  import {downloadFile} from '@/utils/utils'
+  import {pageList} from '@/api/highRisk'
 
   export default {
-    name: 'taskManagementIndex',//任务管理
+    name: 'highRisk',//高风险底册
     data() {
       return {
         total: 0, // 查询总数
@@ -213,7 +213,7 @@
           date: [],//日期
           riskLevel: null,//风险等级
           appointFlag: null,//电话预约情况
-          appointResult: '',//电话预约结果
+          appointResult: null,//电话预约结果
         },//查询条件
         caseList: [],//表格数据
         addVisible: false,//添加Modal显示隐藏

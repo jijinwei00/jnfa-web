@@ -23,12 +23,12 @@
         <!-- 身份证 -->
         <el-form-item
           label="身份证"
-          prop="idCard"
+          prop="idNo"
         >
           <el-input
             prefix-icon="el-icon-search"
             placeholder="身份证"
-            v-model="searchForm.idCard"
+            v-model="searchForm.idNo"
           />
         </el-form-item>
         <!-- 风险等级 -->
@@ -37,43 +37,43 @@
           prop="level"
         >
           <el-select
-            v-model="searchForm.level"
+            v-model="searchForm.riskLevel"
             placeholder="请选择风险等级"
           >
             <el-option
               label="无风险"
-              value="0"
+              value="none"
             >无风险</el-option>
             <el-option
               label="中风险"
-              value="1"
+              value="medium"
             >中风险</el-option>
             <el-option
               label="高风险"
-              value="2"
+              value="high"
             >高风险</el-option>
           </el-select>
         </el-form-item>
         <!-- 治疗方案 -->
         <el-form-item
           label="治疗方案"
-          prop="plan"
+          prop="therapy"
         >
           <el-select
-            v-model="searchForm.plan"
+            v-model="searchForm.therapy"
             placeholder="请选择治疗方案"
           >
             <el-option
               label="保守治疗"
-              value="0"
+              value="reserved"
             >保守治疗</el-option>
             <el-option
               label="手术治疗"
-              value="1"
+              value="surgery"
             >手术治疗</el-option>
             <el-option
               label="观察治疗"
-              value="2"
+              value="watch"
             >观察治疗</el-option>
           </el-select>
         </el-form-item>
@@ -100,16 +100,15 @@
     <!-- table 数据展示 -->
     <div class="dataQuery_table">
       <el-table
-        :data="tableData"
+        :data="caseList"
         style="width: 100%"
         max-height="400"
       >
         <el-table-column
-          fixed
-          prop="key"
+          type="index"
           label="序号"
-          width="80"
-        />
+          fixed
+        ></el-table-column>
 
         <el-table-column
           prop="name"
@@ -120,34 +119,34 @@
           label="性别"
         />
         <el-table-column
-          prop="idCard"
+          prop="idNo"
           label="证件号码"
           width="200"
         />
         <el-table-column
-          prop="level"
+          prop="riskLevel"
           label="风险等级"
         />
         <el-table-column
-          prop="plan"
+          prop="therapy"
           label="治疗方案"
         />
         <el-table-column
-          prop="CT"
+          prop="resultDescription"
           label="CT结果"
           width="280"
         />
 
         <el-table-column
-          prop="advice"
+          prop="doctorAdvice"
           label="医生建议"
         />
         <el-table-column
-          prop="doctor"
+          prop="doctorName"
           label="医生姓名"
         />
         <el-table-column
-          prop="telephone"
+          prop="doctorTel"
           label="联系方式"
           width="150"
         />
@@ -158,9 +157,9 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
+        :current-page="listQuery.page"
         :page-sizes="[10,20,30]"
-        :page-size="10"
+        :page-size="listQuery.size"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
       >
@@ -170,100 +169,46 @@
 </template>
 
 <script>
+  import {pageList,exportToExcel} from '@/api/followUp'
+  import {downloadFile} from '@/utils/utils'
+
   export default {
-    name: 'dataQueryIndex',//随访计划
+    name: 'followUp',//随访计划
     data() {
       return {
         total: 0, // 查询总数
-        pageNum: 1, // 查询分页
-        pageSize: 5, // 查询分页
+        listQuery: {
+          page: 1,
+          size: 10
+        },
         searchForm: {
           name: '',//姓名
-          idCard: '',//身份证
-          level: '',//风险等级
-          plan: '',//治疗方案
-        },//查询条件
-        tableData: [{
-          key: '1',
-          name: '测试',
-          idCard: '231084199601291615',
-          sex: '男',
-          telephone: '17644885599',
-          level: '高风险',
-          plan: '手术治疗',
-          CT: '结节大于6mm小于15mm',
-          advice: '立即手术',
-          doctor: '张医生',
-        }, {
-          key: '2',
-          name: '测试1',
-          idCard: '231084199601291615',
-          sex: '女',
-          telephone: '17644885599',
-          level: '高风险',
-          plan: '手术治疗',
-          CT: '结节大于6mm小于15mm',
-          advice: '立即手术',
-          doctor: '张医生',
-
-        }, {
-          key: '3',
-          name: '测试',
-          idCard: '231084199601291615',
-          sex: '男',
-          telephone: '17644885599',
-          level: '高风险',
-          plan: '手术治疗',
-          CT: '结节大于6mm小于15mm',
-          advice: '立即手术',
-          doctor: '张医生',
-
-        }, {
-          key: '4',
-          name: '测试',
-          idCard: '231084199601291615',
-          sex: '男',
-          telephone: '17644885599',
-          level: '高风险',
-          plan: '手术治疗',
-          CT: '结节大于6mm小于15mm',
-          advice: '立即手术',
-          doctor: '张医生',
-
-        }, {
-          key: '5',
-          name: '测试',
-          idCard: '231084199601291615',
-          sex: '男',
-          telephone: '17644885599', level: '高风险',
-          plan: '手术治疗',
-          CT: '结节大于6mm小于15mm',
-          advice: '立即手术',
-          doctor: '张医生',
-
-        },],//table模拟数据
-        currentPage: 1,
-        total: 100,
+          idNo: '',//身份证号码
+          riskLevel: null,//风险等级
+          therapy: null
+        },
+        caseList:[]
       }
     },
-
+    created: function () {
+      this.handleSearch()
+    },
     methods: {
       // 重置
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-      // 查看详情
-      handleTabClick(tab, event) {
-        console.log('Tab', tab, event);
-      },
       //   查询
-      handleSearch() {
-        console.log('查询--->>>>', this.searchForm);
-        alert('查询')
+      async handleSearch() {
+        Object.assign(this.listQuery, this.searchForm)
+        const res = await pageList(this.listQuery)
+        this.caseList = res.data.list
+        this.total = res.data.total
       },
       // 导出
-      handleExport() {
-        alert('导出')
+      async handleExport() {
+        const res =  await exportToExcel(this.searchForm)
+        downloadFile(res,"随访计划.xlsx")
       },
       // 每页加载几条数据
       handleSizeChange(val) {

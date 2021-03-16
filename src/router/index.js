@@ -54,17 +54,17 @@ export default new Router({
                         pageLevel: 1
                     },
                 }, {
-                    path: '/taskManagement/index',
-                    component: () => import('@/views/Screening/taskManagement/Index/index'),
-                    name: 'taskManagement',
+                    path: '/highRisk/index',
+                    component: () => import('@/views/Screening/highRisk/Index/index'),
+                    name: 'highRisk',
                     meta: {
                         title: '高风险底册',
                         pageLevel: 1
                     },
                 }, {
-                    path: '/dataQuery/index',
-                    component: () => import('@/views/Screening/dataQuery/Index/index'),
-                    name: 'dataQuery',
+                    path: '/followUp/index',
+                    component: () => import('@/views/Screening/followUp/Index/index'),
+                    name: 'followUp',
                     meta: {
                         title: '随访计划',
                         pageLevel: 1

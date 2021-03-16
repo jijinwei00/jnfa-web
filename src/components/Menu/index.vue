@@ -64,10 +64,10 @@ export default {
           path: '/case/index'
         }, {
           name: '高风险底册',
-          path: '/taskManagement/index'
+          path: '/highRisk/index'
         }, {
           name: '随访计划',
-          path: '/dataQuery/index'
+          path: '/followUp/index'
         }, {
           name: '随访任务',
           path: '/screeningReview/index'

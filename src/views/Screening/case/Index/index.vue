@@ -220,17 +220,14 @@
             </div>
             <el-radio-group v-model="caseDetail.smookingStatus">
               <el-radio
-                label="是，目前仍在吸烟"
-                value="1"
-              ></el-radio>
+                label="1"
+              >是，目前仍在吸烟</el-radio>
               <el-radio
-                label="否，从不吸烟"
-                value="0"
-              ></el-radio>
+                label="0"
+              >否，从不吸烟</el-radio>
               <el-radio
-                label="以前吸，目前戒烟"
-                value="2"
-              ></el-radio>
+                label="2"
+              >以前吸，目前戒烟</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-row>
@@ -241,13 +238,11 @@
             </div>
             <el-radio-group v-model="caseDetail.copd">
               <el-radio
-                label="是"
-                value="1"
-              ></el-radio>
+                label="1"
+              >是</el-radio>
               <el-radio
-                label="否"
-                value="0"
-              ></el-radio>
+                label="0"
+              >否</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-row>
@@ -258,13 +253,11 @@
             </div>
             <el-radio-group v-model="caseDetail.exposePoison">
               <el-radio
-                label="是"
-                value="1"
-              ></el-radio>
+                label="1"
+              >是</el-radio>
               <el-radio
-                label="否"
-                value="0"
-              ></el-radio>
+                label="0"
+              >否</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-row>
@@ -275,13 +268,11 @@
             </div>
             <el-radio-group v-model="caseDetail.relationSuffer">
               <el-radio
-                label="是"
-                value="1"
-              ></el-radio>
+                label="1"
+              >是</el-radio>
               <el-radio
-                label="否"
-                value="0"
-              ></el-radio>
+                label="0"
+              >否</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-row>
