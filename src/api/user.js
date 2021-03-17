@@ -12,6 +12,17 @@ export function getUsers(listQuery) {
     data: listQuery
   })
 }
+/**
+ * 查找家庭医生列表
+ * @param page
+ * @returns {AxiosPromise}
+ */
+export function familyDoctorList() {
+  return request({
+    url: '/user/doctor/list',
+    method: 'post'
+  })
+}
 
 /**
  * 查找机构列表

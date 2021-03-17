@@ -257,7 +257,7 @@
 
 <script>
 export default {
-  name: "screeningReviewIndex", //随访任务
+  name: "followupTask", //随访任务
   data() {
     return {
       total: 0, // 查询总数

@@ -70,17 +70,17 @@ export default new Router({
                         pageLevel: 1
                     },
                 }, {
-                    path: '/screeningReview/index',
-                    component: () => import('@/views/Screening/screeningReview/Index/index'),
-                    name: 'screeningReview',
+                    path: '/followUpTask/index',
+                    component: () => import('@/views/Screening/followUpTask/Index/index'),
+                    name: 'followUpTask',
                     meta: {
                         title: '随访任务',
                         pageLevel: 1
                     },
                 }, {
-                    path: '/statisticalAnalysis/index',
-                    component: () => import('@/views/Screening/statisticalAnalysis/Index/index'),
-                    name: 'statisticalAnalysis',
+                    path: '/workProgress/index',
+                    component: () => import('@/views/Screening/workProgress/Index/index'),
+                    name: 'workProgress',
                     meta: {
                         title: '工作进度',
                         pageLevel: 1

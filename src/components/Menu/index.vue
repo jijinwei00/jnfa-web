@@ -70,10 +70,10 @@ export default {
           path: '/followUp/index'
         }, {
           name: '随访任务',
-          path: '/screeningReview/index'
+          path: '/followUpTask/index'
         }, {
           name: '工作进度',
-          path: '/statisticalAnalysis/index'
+          path: '/workProgress/index'
         }, {
           name: '账号管理',
           path: '/screening/acountManagement/index'
