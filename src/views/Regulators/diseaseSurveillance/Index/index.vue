@@ -140,6 +140,25 @@
             >漏访</el-option>
           </el-select>
         </el-form-item>
+          <!-- 是否已经到筛查中心报道并完成CT检查 -->
+        <el-form-item
+          label="是否已经到筛查中心报道并完成CT检查"
+          prop="CT"
+        >
+          <el-select
+            v-model="searchForm.CT"
+            placeholder="请选择是否已经到筛查中心报道并完成CT检查"
+          >
+            <el-option
+              label="是"
+              value="0"
+            >是</el-option>
+            <el-option
+              label="否"
+              value="1"
+            >否</el-option>
+          </el-select>
+        </el-form-item>
         <!-- button -->
         <el-form-item>
           <!-- 查询 -->
@@ -236,6 +255,11 @@
           width=""
           fixed="right"
         />
+            <el-table-column
+          prop="CT"
+          label="是否已经到筛查中心报道并完成CT检查"
+          width="280"
+        />
       </el-table>
     </div>
     <!-- 分页底部展示 -->
@@ -271,6 +295,7 @@ export default {
         IDcard: "", //身份证号
         area: '',//行政区划
         status: '',//随访状态
+          CT:'',//是否已经到筛查中心报道并完成CT检查
       }, //查询条件
       options: [{
         value: 'zhinan',

@@ -56,7 +56,7 @@ export default {
         path: '/home/index',
       },
       {
-        name: '基层治疗机构',
+        name: '基层医疗卫生机构',
         icon: 'iconfont icon-menhuwangzhan',
         path: '/screening',
         childrens: [{

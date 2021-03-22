@@ -111,6 +111,25 @@
             >拒绝</el-option>
           </el-select>
         </el-form-item>
+         <!-- 是否已经到筛查中心报道并完成CT检查 -->
+        <el-form-item
+          label="是否已经到筛查中心报道并完成CT检查"
+          prop="CT"
+        >
+          <el-select
+            v-model="searchForm.CT"
+            placeholder="请选择是否已经到筛查中心报道并完成CT检查"
+          >
+            <el-option
+              label="是"
+              value="0"
+            >是</el-option>
+            <el-option
+              label="否"
+              value="1"
+            >否</el-option>
+          </el-select>
+        </el-form-item>
         <!-- button -->
         <el-form-item>
           <!-- 查询 -->
@@ -137,15 +156,18 @@
         style="width: 100%"
         max-height="400"
         @selection-change="handleSelectionChange"
+          :header-cell-style="{textAlign: 'center'}"
+        :cell-style="{ textAlign: 'center' }"
       >
-        <el-table-column
+       <el-table-column
           type="selection"
           width="55"
         />
         <el-table-column
-          type="index"
-          label="序号"
           fixed
+          prop="key"
+          label="序号"
+          width="80"
         />
         <el-table-column
           prop="name"
@@ -154,27 +176,35 @@
         <el-table-column
           prop="sex"
           label="性别"
+           width="80"
         />
         <el-table-column
-          prop="riskLevel"
+          prop="level"
           label="风险等级"
         />
 
         <el-table-column
-          prop="cardType"
+          prop="idCardType"
           label="证件类型"
+          width="100"
         />
         <el-table-column
-          prop="idNo"
+          prop="idCard"
           label="证件号码"
+          width="200"
         />
         <el-table-column
-          prop="appointFlag"
+          prop="appointment"
           label="电话预约情况"
         />
         <el-table-column
-          prop="appointResult"
+          prop="appointmentRusult"
           label="预约结果"
+        />
+          <el-table-column
+          prop="CT"
+          label="是否已经到筛查中心报道并完成CT检查"
+          width="280"
         />
       </el-table>
     </div>
@@ -214,6 +244,7 @@
           riskLevel: null,//风险等级
           appointFlag: null,//电话预约情况
           appointResult: null,//电话预约结果
+          CT:'',
         },//查询条件
         caseList: [],//表格数据
         addVisible: false,//添加Modal显示隐藏

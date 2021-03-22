@@ -39,6 +39,25 @@
               :value="doctor.id"/>
           </el-select>
         </el-form-item>
+        <!-- 是否已经到筛查中心报道并完成CT检查 -->
+        <el-form-item
+          label="是否已经到筛查中心报道并完成CT检查"
+          prop="CT"
+        >
+          <el-select
+            v-model="searchForm.CT"
+            placeholder="请选择是否已经到筛查中心报道并完成CT检查"
+          >
+            <el-option
+              label="是"
+              value="0"
+            >是</el-option>
+            <el-option
+              label="否"
+              value="1"
+            >否</el-option>
+          </el-select>
+        </el-form-item>
         <!-- button -->
         <el-form-item>
           <el-button
@@ -74,6 +93,10 @@
         </el-table-column>
         <el-table-column label="已提交肺癌筛查中心"></el-table-column>
         <el-table-column label="已提交患者"></el-table-column>
+         <el-table-column label="是否已经到筛查中心报道并完成CT检查">
+          <el-table-column label="是"></el-table-column>
+          <el-table-column label="否"></el-table-column>
+        </el-table-column>
       </el-table>
       <el-table
         :data = "therapyList"
@@ -94,6 +117,10 @@
           <el-table-column label="保守"></el-table-column>
           <el-table-column label="手术"></el-table-column>
           <el-table-column label="观察"></el-table-column>
+        </el-table-column>
+          <el-table-column label="是否已经到筛查中心报道并完成CT检查">
+          <el-table-column label="是"></el-table-column>
+          <el-table-column label="否"></el-table-column>
         </el-table-column>
       </el-table>
       <el-table
@@ -116,6 +143,10 @@
           <el-table-column label="脱访"></el-table-column>
           <el-table-column label="完成"></el-table-column>
         </el-table-column>
+          <el-table-column label="是否已经到筛查中心报道并完成CT检查">
+          <el-table-column label="是"></el-table-column>
+          <el-table-column label="否"></el-table-column>
+        </el-table-column>
       </el-table>
     </div>
   </div>
@@ -132,6 +163,7 @@
         searchForm: {
           date: null, //日期
           doctor: "", //医生账号
+          CT:'',
         },
         riskList: [],
         therapyList: [],

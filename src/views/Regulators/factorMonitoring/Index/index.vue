@@ -70,6 +70,25 @@
             >李医生</el-option>
           </el-select>
         </el-form-item>
+               <!-- 是否已经到筛查中心报道并完成CT检查 -->
+        <el-form-item
+          label="是否已经到筛查中心报道并完成CT检查"
+          prop="CT"
+        >
+          <el-select
+            v-model="searchForm.CT"
+            placeholder="请选择是否已经到筛查中心报道并完成CT检查"
+          >
+            <el-option
+              label="是"
+              value="0"
+            >是</el-option>
+            <el-option
+              label="否"
+              value="1"
+            >否</el-option>
+          </el-select>
+        </el-form-item>
         <!-- button -->
         <el-form-item>
           <el-button
@@ -145,8 +164,9 @@ export default {
         date: "", //日期
         doctor: "", //医生账号
         plan: '0',//工作进度
+        CT:'',
       }, //查询条件
-      tableColumList: [{ key: 'index', val: '序号', children: [] }, { key: 'sum', val: '收集者总数', children: [] }, { key: 'fxdc', val: '风险底册', children: [{ key: 'zs', val: '总数' }, { key: 'wu', val: '无风险' }, { key: 'zhong', val: '中风险' }, { key: 'gao', val: '高风险' }] }, { key: 'fa', val: '已提交肺癌中心', children: [] }, { key: 'wtj', val: '未提交患者', children: [] }, { key: 'qt', val: '其他', children: [] }],//table表头
+      tableColumList:[{ key: 'index', val: '序号', children: [] }, { key: 'sum', val: '收集者总数', children: [] }, { key: 'fxdc', val: '风险底册', children: [{ key: 'zs', val: '总数' }, { key: 'wu', val: '无风险' }, { key: 'zhong', val: '中风险' }, { key: 'gao', val: '高风险' }] }, { key: 'fa', val: '已提交肺癌中心', children: [] }, { key: 'wtj', val: '未提交患者', children: [] }, { key: 'qt', val: '其他', children: [] }, { key: 'CT', val: '是否已经到筛查中心报道并完成CT检查', children: [{ key: 'shi', val: '是' }, { key: 'fou', val: '否' }] }],//table表头
       tableData: [
         {
           index: "1",
@@ -181,9 +201,9 @@ export default {
   methods: {
     // 工作进度select
     onSelectPlan(val) {
-      let dataList1 = [{ key: 'index', val: '序号', children: [] }, { key: 'sum', val: '收集者总数', children: [] }, { key: 'fxdc', val: '风险底册', children: [{ key: 'zs', val: '总数' }, { key: 'wu', val: '无风险' }, { key: 'zhong', val: '中风险' }, { key: 'gao', val: '高风险' }] }, { key: 'fa', val: '已提交肺癌中心', children: [] }, { key: 'wtj', val: '未提交患者', children: [] }, { key: 'qt', val: '其他', children: [] }]//高风险底册
-      let dataList2 = [{ key: 'index', val: '序号', children: [] }, { key: 'fxlx', val: '风险类型', children: [{ key: 'wu', val: '无' }, { key: 'zhong', val: '中' }, { key: 'gao', val: '高' }] }, { key: 'zlfa', val: '治疗方案', children: [{ key: 'bs', val: '保守' }, { key: 'ss', val: '手术' }, { key: 'gc', val: '观察' }] }]//随访计划
-      let dataList3 = [{ key: 'index', val: '序号', children: [] }, { key: 'fxlx', val: '风险类型', children: [{ key: 'wu', val: '无' }, { key: 'zhong', val: '中' }, { key: 'gao', val: '高' }] }, { key: 'zlfa', val: '治疗方案', children: [{ key: 'bs', val: '保守' }, { key: 'ss', val: '手术' }, { key: 'gc', val: '观察' }] }, { key: 'sfzt', val: '随访状态', children: [{ key: 'sf', val: '已随访' }, { key: 'tf', val: '脱访' }, { key: 'sf', val: '失访' }] }]//随访任务
+      let dataList1 = [{ key: 'index', val: '序号', children: [] }, { key: 'sum', val: '收集者总数', children: [] }, { key: 'fxdc', val: '风险底册', children: [{ key: 'zs', val: '总数' }, { key: 'wu', val: '无风险' }, { key: 'zhong', val: '中风险' }, { key: 'gao', val: '高风险' }] }, { key: 'fa', val: '已提交肺癌中心', children: [] }, { key: 'wtj', val: '未提交患者', children: [] }, { key: 'qt', val: '其他', children: [] }, { key: 'CT', val: '是否已经到筛查中心报道并完成CT检查', children: [{ key: 'shi', val: '是' }, { key: 'fou', val: '否' }] }]//高风险底册
+      let dataList2 = [{ key: 'index', val: '序号', children: [] }, { key: 'fxlx', val: '风险类型', children: [{ key: 'wu', val: '无' }, { key: 'zhong', val: '中' }, { key: 'gao', val: '高' }] }, { key: 'zlfa', val: '治疗方案', children: [{ key: 'bs', val: '保守' }, { key: 'ss', val: '手术' }, { key: 'gc', val: '观察' }] },{ key: 'CT', val: '是否已经到筛查中心报道并完成CT检查', children: [{ key: 'shi', val: '是' }, { key: 'fou', val: '否' }] }]//随访计划
+      let dataList3 = [{ key: 'index', val: '序号', children: [] }, { key: 'fxlx', val: '风险类型', children: [{ key: 'wu', val: '无' }, { key: 'zhong', val: '中' }, { key: 'gao', val: '高' }] }, { key: 'zlfa', val: '治疗方案', children: [{ key: 'bs', val: '保守' }, { key: 'ss', val: '手术' }, { key: 'gc', val: '观察' }] }, { key: 'sfzt', val: '随访状态', children: [{ key: 'sf', val: '已随访' }, { key: 'tf', val: '脱访' }, { key: 'sf', val: '失访' }] },{ key: 'CT', val: '是否已经到筛查中心报道并完成CT检查', children: [{ key: 'shi', val: '是' }, { key: 'fou', val: '否' }] }]//随访任务
       if (val == '0') { this.tableColumList = dataList1 }
       if (val == '1') { this.tableColumList = dataList2 }
       if (val == '2') { this.tableColumList = dataList3 }
